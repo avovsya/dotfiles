@@ -39,7 +39,6 @@ Bundle "git://github.com/voldmar/Visual-Mark.git"
 Bundle "git://github.com/xolox/vim-easytags.git"
 Bundle "git://github.com/vim-scripts/Open-associated-programs.git"
 Bundle "git://github.com/Raimondi/delimitMate.git"
-"Bundle "git://github.com/nathanaelkane/vim-indent-guides.git"
 Bundle "git://github.com/vim-scripts/jsflakes.vim.git"
 Bundle "git://github.com/michalliu/jsruntime.vim.git"
 Bundle "git://github.com/michalliu/jsoncodecs.vim.git"
@@ -425,7 +424,6 @@ imap <C-h> <C-o>h
 imap <C-j> <C-o>j
 imap <C-k> <C-o>k
 imap <C-l> <C-o>l
-
 " Move in command line with Ctrl+h,j,k,l
 cmap <C-h> <Left>
 cmap <C-j> <Down>
@@ -438,8 +436,8 @@ nmap <Leader><right> :rightbelow vnew<CR>
 nmap <Leader><down>  :rightbelow new<CR>
 nmap <Leader><up>    :leftabove  new<CR>
 
-nmap <Leader><Bar> :rightbelow vnew<CR>
-nmap <Leader>- :rightbelow new<CR>
+nmap <Leader><Bar> :rightbelow vnew <bar> set nobuflisted<CR>
+nmap <Leader>- :rightbelow new <bar> set nobuflisted<CR>
 
 " Resize window
 map <Up> <C-W>+
@@ -453,17 +451,14 @@ nmap <Space> <PageDown>
 " Centered search results
 nmap n nzz
 nmap N Nzz
-"nmap * *zz
-"nmap # #zz
 nmap g* g*zz
 nmap g# g#zz
+"nmap * *zz
+"nmap # #zz
 
 " Ctrl+S
 map <C-s> <esc>:w<CR>
 imap <C-s> <C-o>:w<CR>
-" Ctrl+Shift+S
-map <C-S-s> <esc>:wa<CR>
-imap <C-S-s> <C-o>:wa<CR>
 
 "Use MiniBuf Explorer instead
 nmap <Tab> :bnext<cr>
@@ -494,12 +489,9 @@ map <Leader>g <Esc>:call ToggleGUINoise()<cr>
 nmap <Leader>bl :ls<cr>:b
 nmap <Leader>h :bp<cr>
 nmap <Leader>l :bn<cr>
-" Удалить буфер
-"nmap <Leader>q :bw<cr>
-nmap <Leader>q <Plug>Kwbd
 
-" Close file without closing window
-"nnoremap <silent> <Leader>c :Bclose<CR>
+" Удалить буфер
+nmap <Leader>q <Plug>Kwbd
 
 " Show unsaved changes
 " http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file
