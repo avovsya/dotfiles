@@ -1,22 +1,6 @@
 " ==============================================================================
 " Файл пользовательских настроек vim (7.3)
 " Maintrainer: azz
-
-"Text/Code Navigation
-"    "F1"  Help
-"    "C-S-F1"  Rebuild help tags
-"    ",t"  Code Explorer
-
-"Explore Buffers and Files
-"    "Ctrl+F" Files
-"    "Ctrl+E" MRU
-"
-"    "Backspace"  File Explorer in normal mode
-"    "F8" File Explorer in insert and Visual mode
-
-"Manipulate Windows and Buffers
-"    "F9"  Restore Last Session
-"    ",q" Delete Current Buffer
 " ==============================================================================
 " "Bundles"                 Пакеты плагинов {{{1
 " ==============================================================================
@@ -253,7 +237,7 @@ set shortmess+=I    " Отключение приветственного соо
 set wildmenu        " Показывать меню в командной строке
 " для выбора вариантов авто-дополнения
 set showmatch       " Довсвечивать совпадающую скобку
-set list            " Подсвечивать некоторые символы
+set nolist          " Не подсвечивать некоторые символы
 
 " Замена символа "-" на пробел, для свёрнутых блоков
 set fillchars=fold:\ 
@@ -380,10 +364,6 @@ inoremap <Up> <NOP>
 inoremap <Down> <NOP>
 inoremap <Left> <NOP>
 inoremap <Right> <NOP>
-noremap <Up> <NOP>
-noremap <Down> <NOP>
-noremap <Left> <NOP>
-noremap <Right> <NOP>
 
 " Move in insert mode with Ctrl+h,j,k,l
 imap <C-h> <C-o>h
@@ -406,10 +386,10 @@ nmap <Leader><Bar> :rightbelow vnew <bar> set nobuflisted<CR>
 nmap <Leader>- :rightbelow new <bar> set nobuflisted<CR>
 
 " Resize window
-nmap <Up> <C-W>+
-nmap <Down> <C-W>-
-nmap <Left> <C-W><
-nmap <Right> <C-W>>
+noremap <Up> 5<C-W>+
+noremap <Down> 5<C-W>-
+noremap <Left> 5<C-W><
+noremap <Right> 5<C-W>>
 
 " Page down with <Space>
 nmap <Space> <PageDown>
@@ -448,6 +428,10 @@ nmap <C-l> <C-W>l
 " ,ev open _vimrc in new tab
 nmap <leader>ev :e $MYVIMRC<CR>
 
+" Edit another file in the same directory as the current file
+" uses expression to extract path from current file's path
+map <Leader>n :vnew <C-R>=expand("%:p:h") . '/'<CR>
+
 " ,g Toggle GUI Noise
 map <Leader>g <Esc>:call ToggleGUINoise()<cr>
 
@@ -459,7 +443,7 @@ nmap <Leader>l :bn<cr>
 " Delete buffer but save split
 nmap <Leader>q <Plug>Kwbd
 " Delete buffer and close split
-nmap <Leader>c <Plug>Kwbd :q<cr>
+nmap <Leader>c :bw<CR>
 
 " Sessions
 nmap <C-o> :SessionList<cr>
@@ -572,7 +556,7 @@ function! s:Kwbd(kwbdStage)
 	execute s:kwbdWinNum . 'wincmd w'
 endif
 if(buflisted(s:kwbdBufNum) || s:kwbdBufNum == bufnr("%"))
-	execute "bd " . s:kwbdBufNum
+	execute "bw " . s:kwbdBufNum
 endif
 if(!s:buflistedLeft)
 	set nobuflisted " if change to 'buflisted' it would be Scratch buffer
@@ -694,7 +678,7 @@ let NERDTreeShowHidden=1
 let NERDTreeKeepTreeInNewTab=0
 let NERDTreeMinimalUI=1 " Disables display of the 'Bookmarks' label and 'Press ? for help' text.
 let NERDTreeDirArrows=1 " Tells the NERD tree to use arrows instead of + ~ chars when displaying directories.
-let NERDTreeBookmarksFile= $VIM . '/.NERDTreeBookmarks'
+let NERDTreeBookmarksFile= $VIMHOME . '/.NERDTreeBookmarks'
 " ==============================================================================
 " "Plugin.Syntastic" {{{2
 " ==============================================================================
@@ -738,13 +722,6 @@ function! s:template_keywords()
 	"silent %s/<+DATE+>/\=strftime('%Y-%m-%d')/g
 endfunction
 " ==============================================================================
-" "Plugin.VisualMark" {{{2
-" ==============================================================================
-" поставить/убрать отметку перейти к следующей/предыдущей
-" отметке (plugin-visualmark)
-nmap mm <plug>Vm_toggle_sign
-nmap mn <plug>Vm_goto_next_sign
-nmap mp <plug>Vm_goto_prev_sign
 " "Plugin.VimWiki" {{{2
 " ==============================================================================
 if s:iswin
