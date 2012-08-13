@@ -8,7 +8,7 @@
 "    ",t"  Code Explorer
 
 "Explore Buffers and Files
-"    "Ctrl+P" Files
+"    "Ctrl+F" Files
 "    "Ctrl+E" MRU
 "
 "    "Backspace"  File Explorer in normal mode
@@ -64,6 +64,8 @@ Bundle "git://github.com/zaiste/tmux.vim.git"
 Bundle "git://github.com/benmills/vimux.git"
 
 Bundle "git://github.com/vim-scripts/YankRing.vim.git"
+Bundle "git://github.com/vim-scripts/diffchanges.vim.git"
+
 
 " Wikis
 " Personal Wiki for Vim  - vimwiki
@@ -71,36 +73,30 @@ filetype plugin indent on
 " ==============================================================================
 " "Primary"                 Приоритетные настройки {{{1
 " ==============================================================================
-
 let s:iswin = has('win32') || has('win64')
 
 let $TEMP = '~/.vim/tmp'
 let $VIMHOME = '~/.vim'
-"let s:lastsession_file = expand($TEMP).'/lastsession.vim'
 
 " Отключение совместимости с vi
 set nocompatible
 
 " Использовать англоязычное меню
 set langmenu=en
-
 " ==============================================================================
 " "Quick"                   Быстрые настройки {{{1
 " ==============================================================================
 " (0 - откл. 1 - вкл.)
-
-" us - USer option
 let s:us_folding              = 1 " Свертывание участков кода
 let s:us_linewrap             = 0 " Перенос длинных строк
 let s:us_goto_last_pos        = 1 " Перемещать курсор на предыдущую позицию
-                                  " при открытии файла
+" при открытии файла
 " ==============================================================================
 " "General"                 Основные настройки {{{1
 " ==============================================================================
-
- " AutoReload .vimrc
+" AutoReload .vimrc
 if has("autocmd")
-  autocmd! bufwritepost .vimrc source $MYVIMRC
+	autocmd! bufwritepost .vimrc source $MYVIMRC
 endif
 
 " Включение подсветки синтаксиса
@@ -112,6 +108,7 @@ filetype plugin indent on
 " Отключение оповещения морганием и звуком
 set novisualbell
 set t_vb=
+
 " Disable bell in GUI
 autocmd GUIEnter * set novisualbell t_vb=
 
@@ -165,9 +162,9 @@ set iminsert=0
 
 " Испольвозать англоязычный интерфес
 if s:iswin
-    language message en
+	language message en
 else " для linux
-    language mes C
+	language mes C
 endif
 
 " русская раскладка клавиатуры
@@ -189,7 +186,6 @@ set fileformats=unix,dos,mac " Порядок определения форма�
 " ==============================================================================
 " "Backup,Undo,Swap"        Резервное копирование {{{1 "
 " ==============================================================================
-
 " История команд
 set history=1000
 
@@ -200,13 +196,12 @@ set undolevels=5000
 
 " Настройки отмены изменений
 if v:version >= 703
-    set undodir=$TEMP
-    set undofile
+	set undodir=$TEMP
+	set undofile
 endif
 
 set backupdir=~/.vim/tmp/bac//,/tmp
 set directory=~/.vim/tmp/swp//,/tmp
-
 " ==============================================================================
 " "GUI"                     Вид {{{1
 " ==============================================================================
@@ -241,8 +236,8 @@ catch /^Vim\%((\a\+)\)\=:E185/
 endtry
 
 if s:iswin
-    " Установка высоты и ширины окна
-    winsize 90 30
+	" Установка высоты и ширины окна
+	winsize 90 30
 endif
 
 set guioptions-=b   " Отключение скролл-баров
@@ -256,7 +251,7 @@ set numberwidth=5
 set shortmess+=I    " Отключение приветственного сообщения
 "set showtabline=2   " Показывать по умлочанию строку со вкладками Use MiniBufExplore instead
 set wildmenu        " Показывать меню в командной строке
-                    " для выбора вариантов авто-дополнения
+" для выбора вариантов авто-дополнения
 set showmatch       " Довсвечивать совпадающую скобку
 set list            " Подсвечивать некоторые символы
 
@@ -265,11 +260,11 @@ set fillchars=fold:\
 
 " Установка символов для подсветки
 if has('multi_byte')
-    if version >= 700
-        set listchars=tab:▸\ ,trail:·,extends:»,precedes:«,nbsp:× 
-    else
-        set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:_ 
-    endif
+	if version >= 700
+		set listchars=tab:▸\ ,trail:·,extends:»,precedes:«,nbsp:× 
+	else
+		set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:_ 
+	endif
 endif
 
 " Подсветка всех слов под курсором
@@ -277,25 +272,21 @@ endif
 " ==============================================================================
 " "Statusline"              Статусная строка {{{1
 " ==============================================================================
-
 " Включение отображения незавершенных команд в статусной строке
 set showcmd
 set laststatus=2
 " ==============================================================================
 " "Indent"                  Отступы и табуляция {{{1
 " ==============================================================================
-
 set autoindent                          " Наследовать отступы предыдущей строки
 set smartindent                         " Включить 'умные' отступы
 "set expandtab                           " Преобразование таба в пробелы
 set shiftwidth=4                        " Размер табуляции по умолчанию
 set softtabstop=4
 set tabstop=4
-
 " ==============================================================================
 " "Search"                  Поиск текста {{{1
 " ==============================================================================
-
 set hlsearch        " Включение подсветки слов при поиске
 set incsearch       " Использовать поиск по мере набора
 
@@ -309,79 +300,71 @@ set gdefault   " 'g' flag for all commands like :%s/a/b
 
 " В режиме поиска используется раскладка, заданная по умолчанию
 set imsearch=-1
-
 " ==============================================================================
 " "Folding"                 Свертывание блоков текста {{{1
 " ==============================================================================
-
 if s:us_folding
-    " Включение складок
-    set foldenable
+	" Включение складок
+	set foldenable
 
-    " Ширина колонки
-    "set foldcolumn=4
+	" Ширина колонки
+	"set foldcolumn=4
 
-    " Опция задаёт значение опции 'foldlevel' в начале редактирования нового
-    " буфера в окне. Её полезно использовать для закрытия всех складок в
-    " файле в начале редактирования (при значении 0), закрытия некоторых
-    " складок (при значении от 1) или открывания всех складок (при значении 99)
-    set foldlevelstart=99
+	" Опция задаёт значение опции 'foldlevel' в начале редактирования нового
+	" буфера в окне. Её полезно использовать для закрытия всех складок в
+	" файле в начале редактирования (при значении 0), закрытия некоторых
+	" складок (при значении от 1) или открывания всех складок (при значении 99)
+	set foldlevelstart=99
 
-    " Опция задаёт метод образования складок для текущего окна.
-    " Список возможных значений:
-    "   manual  Складки создаются вручную.
-    "   indent  Складка формируется строками с одинаковыми отступами.
-    "   expr    Уровень складки для строки задаётся значением опции 'foldexpr'.
-    "   marker  Складки задаются с использованием маркеров.
-    "   syntax  Складки задаются в соответствии с правилами подсветки синтаксиса.
-    "   diff    В складки помещаются неизменённые фрагменты текста
-    set foldmethod=indent
+	" Опция задаёт метод образования складок для текущего окна.
+	" Список возможных значений:
+	"   manual  Складки создаются вручную.
+	"   indent  Складка формируется строками с одинаковыми отступами.
+	"   expr    Уровень складки для строки задаётся значением опции 'foldexpr'.
+	"   marker  Складки задаются с использованием маркеров.
+	"   syntax  Складки задаются в соответствии с правилами подсветки синтаксиса.
+	"   diff    В складки помещаются неизменённые фрагменты текста
+	set foldmethod=indent
 
-    " Опция назначает максимальное количество вложений складок для методов
-    " "indent" и "syntax". Опция позволяет избежать создания слишком
-    " большого количества складок. Использование значения, большего, чем 20,
-    " не работает, поскольку встроенное ограничение количества вложений в
-    " складках соответствует 20
-    set foldnestmax=3
-
+	" Опция назначает максимальное количество вложений складок для методов
+	" "indent" и "syntax". Опция позволяет избежать создания слишком
+	" большого количества складок. Использование значения, большего, чем 20,
+	" не работает, поскольку встроенное ограничение количества вложений в
+	" складках соответствует 20
+	set foldnestmax=3
 else
-    set nofoldenable
-    set foldmethod=manual
+	set nofoldenable
+	set foldmethod=manual
 
 endif
 
 " ==============================================================================
 " "Sessions"                Сессии {{{1
 " ==============================================================================
-
 " Опции сессий
-set sessionoptions=curdir,buffers,folds,tabpages,winpos,help
-
+set sessionoptions=curdir,buffers,folds,tabpages,winpos,help,blank,resize,winpos,winsize
 " Опции помогают переносить файлы сессий с *nix`ов в ms-windows и наоборот
 set sessionoptions+=unix,slash
-
 " ==============================================================================
 " "LineWrap"                Перенос длинных строк {{{1
 " ==============================================================================
-
 if s:us_linewrap
-    " Задать ширину строки
+	" Задать ширину строки
 	set textwidth=80
-    " Перенос по словам
-    set linebreak
-    if v:version >= 703
-        " Подсвечивать границы
-        set colorcolumn=80
-    endif
-    let &sbr = nr2char(8618).' ' "Show -> at the beginning of wraped line
+	" Перенос по словам
+	set linebreak
+	if v:version >= 703
+		" Подсвечивать границы
+		set colorcolumn=80
+	endif
+	let &sbr = nr2char(8618).' ' "Show -> at the beginning of wraped line
 	set wrap
 else
-    " Запретить перенос строк
-    set nowrap
+	" Запретить перенос строк
+	set nowrap
 endif
-
 " ==============================================================================
-" "Mappings"                Горячие клавиши {{{2
+" "Mappings"                Горячие клавиши {{{1
 " ==============================================================================
 " Создать базу данных для файлов в текущей директории
 map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
@@ -423,10 +406,10 @@ nmap <Leader><Bar> :rightbelow vnew <bar> set nobuflisted<CR>
 nmap <Leader>- :rightbelow new <bar> set nobuflisted<CR>
 
 " Resize window
-map <Up> <C-W>+
-map <Down> <C-W>-
-map <Left> <C-W><
-map <Right> <C-W>>
+nmap <Up> <C-W>+
+nmap <Down> <C-W>-
+nmap <Left> <C-W><
+nmap <Right> <C-W>>
 
 " Page down with <Space>
 nmap <Space> <PageDown>
@@ -441,22 +424,20 @@ nmap # #zz
 
 nnoremap Y y$
 
+" Ctrl+k+d
+nmap <C-k>d gg=G''
+
 " Ctrl+S
 map <C-s> <esc>:w<CR>
 imap <C-s> <C-o>:w<CR>
 
-"Use MiniBuf Explorer instead
-nmap <Tab> :bnext<cr>
-nmap <S-Tab> :bprevious<cr>
-
-" Create or open file
-nmap <C-n> :e 
-
 " ,p Paste helper
 set pastetoggle=<Leader>p
 
-" ,s quick replace
-nnoremap <leader>s :%s//<left>
+" Replace the word under cursor
+nnoremap <Leader>r :call Replace(1)<CR>
+" Quick replace
+nnoremap <Leader>s :call Replace(0)<CR>
 
 " Переключение по сплитам
 nmap <C-h> <C-W>h
@@ -475,140 +456,139 @@ nmap <Leader>bl :ls<cr>:b
 nmap <Leader>h :bp<cr>
 nmap <Leader>l :bn<cr>
 
-" Удалить буфер
+" Delete buffer but save split
 nmap <Leader>q <Plug>Kwbd
+" Delete buffer and close split
+nmap <Leader>c <Plug>Kwbd :q<cr>
+
+" Sessions
+nmap <C-o> :SessionList<cr>
+nmap <F8> :SessionSave<cr>
+
+" Show hiddel chars
+nmap <C-q> :call ToggleListChars()<cr>
 
 " Show unsaved changes
 " http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file
 " http://stackoverflow.com/questions/749297/can-i-see-changes-before-i-save-my-file-in-vim
-nmap <Leader>z :w !diff % -<CR>
-" ==============================================================================
-" "Menu"                    Меню {{{1
-" ==============================================================================
-
-" Работа с макросами
-menu Tools.Macro.Record<tab>qm qm
-imenu Tools.Macro.Record<tab>qm <esc>qm
-
-menu Tools.Macro.Stop<tab>q q
-imenu Tools.Macro.Stop<tab>q <esc>q
-
-menu Tools.Macro.Run\ Last<tab>@m @m
-imenu Tools.Macro.Run\ Last<tab>@m <esc>@m
-
-" Удалить лишние пробельные символы
-menu <silent> 45.10  Source.Clean\ Extra\ Spaces :call <SID>TrimWhiteSpace()<CR>
-imenu <silent> 45.10  Source.Clean\ Extra\ Spaces <esc>:call <SID>TrimWhiteSpace()<CR>
-
-" Форматирование исходного кода
-menu 45.20 Source.Format\ Code<tab>gg=G gg=G
-imenu 45.20 Source.Format\ Code<tab>gg=G <esc>gg=G
-
-" Приведение отступов к единому стилю
-menu 45.30 Source.Retab<tab>:retab :retab<CR>
-imenu 45.30 Source.Retab<tab>:retab <esc>:retab<CR>
-
-" Открытие файла программой связанной с файлом
-menu <silent> Run.Run<tab> :call <SID>OpenFileInDefaultApp()<cr>
-imenu <silent> Run.Run<tab> <esc>:call <SID>OpenFileInDefaultApp()<cr>i
+nmap <Leader>z :DiffChangesDiffToggle<CR>
 " ==============================================================================
 " "Functions"               Пользовательские функции {{{1
 " ==============================================================================
-
 let s:cmdline = ""
 
 function! ToggleGUINoise()
-  if &go==''
-	"exec('se go=mTrL')
-	exec('se go=mrL')
-	exec('se go-=b')
-	echo "Show GUI elements"
-  else
-	exec('se go=')
-	echo "Show no GUI elements"
-  endif
+	if &go==''
+		"exec('se go=mTrL')
+		exec('se go=mrL')
+		exec('se go-=b')
+		echo "Show GUI elements"
+	else
+		exec('se go=')
+		echo "Show no GUI elements"
+	endif
+endfunction
+
+function! ToggleListChars()
+	if &list==1
+		:set nolist
+	else
+		:set list
+	endif
 endfunction
 
 " Открытие файла приложением определённым по умолчанию
 function! s:OpenFileInDefaultApp()
-    if s:cmdline == ""
-        execute '!"%"'
-        "execute 'call system(shellescape(expand("<cfile>") ' . s:cmdline . '))'
-    else
-        execute '!"% ' . s:cmdline . '"'
-    endif
+	if s:cmdline == ""
+		execute '!"%"'
+	else
+		execute '!"% ' . s:cmdline . '"'
+	endif
+endfunction
+
+function! Replace(state)
+	if(a:state==1)
+		let s:word = input("Replace `" . expand('<cword>') . "` with: ")
+		:exe '%s/\<' . expand('<cword>') . '\>/' . s:word . '/gce'
+		:unlet! s:word
+	else
+		let s:what = input("What to replace: ")
+		let s:word = input("Replace `". s:what . "` with: ")
+		:exe '%s/\<' . s:what . '\>/' . s:word . '/gce'
+		:unlet! s:word
+	endif
 endfunction
 
 " Перемещать курсор на предыдущую позицию при открытии файла
 if s:us_goto_last_pos
-    autocmd BufReadPost * call SetCursorPosition()
+	autocmd BufReadPost * call SetCursorPosition()
 endif
 
 function! SetCursorPosition()
-    if &filetype !~ 'svn\|commit\c'
-        if line("'\"") > 0 && line("'\"") <= line("$")
-            exe "normal! g`\""
-            normal! zz
-        endif
-    end
+	if &filetype !~ 'svn\|commit\c'
+		if line("'\"") > 0 && line("'\"") <= line("$")
+			exe "normal! g`\""
+			normal! zz
+		endif
+	end
 endfunction
 
 "here is a more exotic version of my original Kwbd script
 "delete the buffer; keep windows; create a scratch buffer if no buffers left
 function! s:Kwbd(kwbdStage)
-  if(a:kwbdStage == 1)
-    if(!buflisted(winbufnr(0)))
-      bd!
-      return
-    endif
-    let s:kwbdBufNum = bufnr("%")
-    let s:kwbdWinNum = winnr()
-    windo call s:Kwbd(2)
-    execute s:kwbdWinNum . 'wincmd w'
-    let s:buflistedLeft = 0
-    let s:bufFinalJump = 0
-    let l:nBufs = bufnr("$")
-    let l:i = 1
-    while(l:i <= l:nBufs)
-      if(l:i != s:kwbdBufNum)
-        if(buflisted(l:i))
-          let s:buflistedLeft = s:buflistedLeft + 1
-        else
-          if(bufexists(l:i) && !strlen(bufname(l:i)) && !s:bufFinalJump)
-            let s:bufFinalJump = l:i
-          endif
-        endif
-      endif
-      let l:i = l:i + 1
-    endwhile
-    if(!s:buflistedLeft)
-      if(s:bufFinalJump)
-        windo if(buflisted(winbufnr(0))) | execute "b! " . s:bufFinalJump | endif
-      else
-        enew
-        let l:newBuf = bufnr("%")
-        windo if(buflisted(winbufnr(0))) | execute "b! " . l:newBuf | endif
-      endif
-      execute s:kwbdWinNum . 'wincmd w'
-    endif
-    if(buflisted(s:kwbdBufNum) || s:kwbdBufNum == bufnr("%"))
-      execute "bd " . s:kwbdBufNum
-    endif
-    if(!s:buflistedLeft)
-      set nobuflisted " if change to 'buflisted' it would be Scratch buffer
-      set bufhidden=delete
-      set buftype=nofile
-      setlocal noswapfile
-    endif
+	if(a:kwbdStage == 1)
+		if(!buflisted(winbufnr(0)))
+			bd!
+			return
+		endif
+		let s:kwbdBufNum = bufnr("%")
+		let s:kwbdWinNum = winnr()
+		windo call s:Kwbd(2)
+		execute s:kwbdWinNum . 'wincmd w'
+		let s:buflistedLeft = 0
+		let s:bufFinalJump = 0
+		let l:nBufs = bufnr("$")
+		let l:i = 1
+		while(l:i <= l:nBufs)
+			if(l:i != s:kwbdBufNum)
+				if(buflisted(l:i))
+					let s:buflistedLeft = s:buflistedLeft + 1
+				else
+					if(bufexists(l:i) && !strlen(bufname(l:i)) && !s:bufFinalJump)
+						let s:bufFinalJump = l:i
+					endif
+				endif
+			endif
+			let l:i = l:i + 1
+		endwhile
+		if(!s:buflistedLeft)
+			if(s:bufFinalJump)
+				windo if(buflisted(winbufnr(0))) | execute "b! " . s:bufFinalJump | endif
+		else
+			enew
+			let l:newBuf = bufnr("%")
+			windo if(buflisted(winbufnr(0))) | execute "b! " . l:newBuf | endif
+	endif
+	execute s:kwbdWinNum . 'wincmd w'
+endif
+if(buflisted(s:kwbdBufNum) || s:kwbdBufNum == bufnr("%"))
+	execute "bd " . s:kwbdBufNum
+endif
+if(!s:buflistedLeft)
+	set nobuflisted " if change to 'buflisted' it would be Scratch buffer
+	set bufhidden=delete
+	set buftype=nofile
+	setlocal noswapfile
+endif
   else
-    if(bufnr("%") == s:kwbdBufNum)
-      let prevbufvar = bufnr("#")
-      if(prevbufvar > 0 && buflisted(prevbufvar) && prevbufvar != s:kwbdBufNum)
-        b #
-      else
-        bn
-      endif
-    endif
+	  if(bufnr("%") == s:kwbdBufNum)
+		  let prevbufvar = bufnr("#")
+		  if(prevbufvar > 0 && buflisted(prevbufvar) && prevbufvar != s:kwbdBufNum)
+			  b #
+		  else
+			  bn
+		  endif
+	  endif
   endif
 endfunction
 
@@ -749,13 +729,13 @@ imap <F2> <ESC>:TagbarToggle<cr>
 autocmd User plugin-template-loaded call s:template_keywords()
 
 function! s:template_keywords()
-if search('<+FILE_NAME+>')
-silent %s/<+FILE_NAME+>/\=toupper(expand('%:t:r'))/g
-endif
-if search('<+CURSOR+>')
-execute 'normal! "_da>'
-endif
-"silent %s/<+DATE+>/\=strftime('%Y-%m-%d')/g
+	if search('<+FILE_NAME+>')
+		silent %s/<+FILE_NAME+>/\=toupper(expand('%:t:r'))/g
+	endif
+	if search('<+CURSOR+>')
+		execute 'normal! "_da>'
+	endif
+	"silent %s/<+DATE+>/\=strftime('%Y-%m-%d')/g
 endfunction
 " ==============================================================================
 " "Plugin.VisualMark" {{{2
