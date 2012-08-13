@@ -34,8 +34,7 @@ Bundle "git://github.com/vim-scripts/sessionman.vim.git"
 Bundle "git://github.com/Shougo/neocomplcache.git"
 Bundle "git://github.com/Shougo/neocomplcache-snippets-complete"
 Bundle "git://github.com/tpope/vim-fugitive.git"
-Bundle "git://github.com/vim-scripts/Mark"
-Bundle "git://github.com/voldmar/Visual-Mark.git"
+Bundle "git://github.com/gregsexton/gitv.git"
 Bundle "git://github.com/xolox/vim-easytags.git"
 Bundle "git://github.com/vim-scripts/Open-associated-programs.git"
 Bundle "git://github.com/Raimondi/delimitMate.git"
@@ -58,8 +57,13 @@ Bundle "git://github.com/Lokaltog/vim-powerline.git"
 Bundle "git://github.com/fholgado/minibufexpl.vim.git"
 
 " Тестируемые
-" Quiting of strings
-" Fancy status line
+Bundle "git://github.com/vim-scripts/EasyGrep.git"
+Bundle "git://github.com/godlygeek/tabular.git"
+
+Bundle "git://github.com/zaiste/tmux.vim.git"
+Bundle "git://github.com/benmills/vimux.git"
+
+Bundle "git://github.com/vim-scripts/YankRing.vim.git"
 
 " Wikis
 " Personal Wiki for Vim  - vimwiki
@@ -70,9 +74,9 @@ filetype plugin indent on
 
 let s:iswin = has('win32') || has('win64')
 
-let $TEMP = '~/.vim/temp'
+let $TEMP = '~/.vim/tmp'
 let $VIMHOME = '~/.vim'
-let s:lastsession_file = expand($TEMP).'/lastsession.vim'
+"let s:lastsession_file = expand($TEMP).'/lastsession.vim'
 
 " Отключение совместимости с vi
 set nocompatible
@@ -87,10 +91,7 @@ set langmenu=en
 
 " us - USer option
 let s:us_folding              = 1 " Свертывание участков кода
-let s:us_autosaveses          = 1 " Авто-сохранение сессий (загрузка посл. F9)
 let s:us_linewrap             = 0 " Перенос длинных строк
-let s:us_scratch_buffer       = 0 " Сделать из безымянного буфера scratch буфер
-let s:us_use_dark_colorscheme = 1 " Использовать тёмную тему
 let s:us_goto_last_pos        = 1 " Перемещать курсор на предыдущую позицию
                                   " при открытии файла
 " ==============================================================================
@@ -129,7 +130,7 @@ set whichwrap+=[,]
 set hidden
 
 set autoread            " Включение автоматического перечтения файла при изменении
-set autochdir           " Автоматически устанавливать текущей, директорию отрытого файла
+"set autochdir           " Автоматически устанавливать текущей, директорию отрытого файла
 set browsedir=buffer    " Начинать обзор с каталога текущего буфера
 set confirm             " Включение диалогов с запросами
 
@@ -203,12 +204,9 @@ if v:version >= 703
     set undofile
 endif
 
-" Не создавать резервные копии файлов
-set nobackup
-set nowb
+set backupdir=~/.vim/tmp/bac//,/tmp
+set directory=~/.vim/tmp/swp//,/tmp
 
-" Отключить swap файлы
-set noswapfile
 " ==============================================================================
 " "GUI"                     Вид {{{1
 " ==============================================================================
@@ -227,22 +225,20 @@ set mousemodel=popup
 set scrolloff=999
 
 
-if has('gui_running')
-    " Шрифт по умолчанию
-    if s:iswin
-        if s:us_use_dark_colorscheme
-            set gfn=DejaVu_Sans_Mono:h10:,cRUSSIANconsolas:h11,
-        else
-            set gfn=DejaVu_Sans_Mono:h10:b:cRUSSIAN,consolas:h11,
-        endif
-
-    elseif has("gui_gtk2")
-        "set gfn=DejaVu\ Sans\ Mono\ 10
-		set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
-    endif
-else
-	"colorscheme wombat256
+if s:iswin
+	set gfn=DejaVu_Sans_Mono:h10:,cRUSSIANconsolas:h11,
+elseif has("gui_gtk2")
+	set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
 endif
+
+set background=dark
+let g:solarized_termcolors=256
+try
+	colorscheme solarized
+catch /^Vim\%((\a\+)\)\=:E185/ 
+	echo "Solarized theme not found. Run :BundleInstall"
+	colorscheme desert
+endtry
 
 if s:iswin
     " Установка высоты и ширины окна
@@ -258,7 +254,7 @@ set guioptions-=e   " Замена графических табов, текст
 set number          " Включение отображения номеров строк
 set numberwidth=5
 set shortmess+=I    " Отключение приветственного сообщения
-"set showtabline=2   " Показывать по умлочанию строку со вкладками Use MiniBufExplore instead 
+"set showtabline=2   " Показывать по умлочанию строку со вкладками Use MiniBufExplore instead
 set wildmenu        " Показывать меню в командной строке
                     " для выбора вариантов авто-дополнения
 set showmatch       " Довсвечивать совпадающую скобку
@@ -285,7 +281,6 @@ endif
 " Включение отображения незавершенных команд в статусной строке
 set showcmd
 set laststatus=2
-
 " ==============================================================================
 " "Indent"                  Отступы и табуляция {{{1
 " ==============================================================================
@@ -365,11 +360,6 @@ set sessionoptions=curdir,buffers,folds,tabpages,winpos,help
 " Опции помогают переносить файлы сессий с *nix`ов в ms-windows и наоборот
 set sessionoptions+=unix,slash
 
-if s:us_autosaveses
-    " Авто-сохранение сессии при закрытии vim`a (загрузка F9 в норм. режиме)
-    exec 'autocmd VimLeavePre * silent mksession!' . s:lastsession_file
-endif
-
 " ==============================================================================
 " "LineWrap"                Перенос длинных строк {{{1
 " ==============================================================================
@@ -391,15 +381,8 @@ else
 endif
 
 " ==============================================================================
-" "Mappings"                Горячие клавиши {{{1
+" "Mappings"                Горячие клавиши {{{2
 " ==============================================================================
-" Загрузка последней сессии (работает если в
-" секции "Сессии" определена команда авто-сохранения)
-if s:us_autosaveses
-    exec 'nmap <F9> :source ' . s:lastsession_file . '<cr>'
-    exec 'imap <F9> <esc>:source ' . s:lastsession_file . '<cr>i'
-endif
-
 " Создать базу данных для файлов в текущей директории
 map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 
@@ -453,8 +436,10 @@ nmap n nzz
 nmap N Nzz
 nmap g* g*zz
 nmap g# g#zz
-"nmap * *zz
-"nmap # #zz
+nmap * *zz
+nmap # #zz
+
+nnoremap Y y$
 
 " Ctrl+S
 map <C-s> <esc>:w<CR>
@@ -479,8 +464,8 @@ nmap <C-j> <C-W>j
 nmap <C-k> <C-W>k
 nmap <C-l> <C-W>l
 
-" ,v open _vimrc in new tab
-nmap <leader>v :e $MYVIMRC<CR>
+" ,ev open _vimrc in new tab
+nmap <leader>ev :e $MYVIMRC<CR>
 
 " ,g Toggle GUI Noise
 map <Leader>g <Esc>:call ToggleGUINoise()<cr>
@@ -526,50 +511,6 @@ imenu 45.30 Source.Retab<tab>:retab <esc>:retab<CR>
 " Открытие файла программой связанной с файлом
 menu <silent> Run.Run<tab> :call <SID>OpenFileInDefaultApp()<cr>
 imenu <silent> Run.Run<tab> <esc>:call <SID>OpenFileInDefaultApp()<cr>i
-
-" Загрузка последней сессии
-" (работает если в секции "Сессии" определена команда авто-сохранения)
-if s:us_autosaveses
-    exec 'menu File.Load\ Last\ Session<tab><F6> :source '.s:lastsession_file.'<cr>'
-    exec 'imenu File.Load\ Last\ Session<tab><F6> <esc>:source '.s:lastsession_file.'<cr>'
-endif
-
-" ==============================================================================
-" "Popup-menu"              Всплывающее меню {{{1
-" ==============================================================================
-
-amenu PopUp.-Usrsep1- :
-
-" Добавление/удаление отступов к участкам кода
-" (соотв. горячие клавиши клавиши должны быть определенны)
-"nmenu <silent> PopUp.Source\ Code.Indent\ Block<tab><Ctrl-Tab> <C-tab>
-vmenu <silent> PopUp.Source\ Code.Indent\ Block<tab><C-Tab> <C-tab>
-
-"nmenu <silent>  PopUp.Source\ Code.Dedent\ Block<tab><C-S-Tab> <C-S-tab>
-vmenu <silent>  PopUp.Source\ Code.Dedent\ Block<tab><C-S-Tab> <C-S-tab>
-
-nmenu PopUp.Util.Context\ Help<tab><S-k> <S-k>
-imenu PopUp.Util.Context\ Help<tab><S-k> <esc><S-k>
-
-" Поиск слова под курсором
-nmenu PopUp.Util.Find\ Word\ Under\ Cursor<tab>g* g*
-imenu PopUp.Util.Find\ Word\ Under\ Cursor<tab>g* <esc>g*
-
-" Открыть файл, в качестве имени используется слово под курсором
-nmenu PopUp.Util.Open\ File\ Under\ Cursor<tab>gf gf
-imenu PopUp.Util.Open\ File\ Under\ Cursor<tab>gf <esc>gf
-
-" Перейти к тэгу
-nmenu PopUp.Util.Jump\ Tag\ Under\ Cursor<tab><C-]> g<C-]>
-imenu PopUp.Util.Jump\ Tag\ Under\ Cursor<tab><C-]> <esc>g<C-]>
-
-vmenu PopUp.Util.-Usrsep3- :
-
-" Изменение регистра символов
-vmenu PopUp.Util.Upper\ Case<tab>U U
-vmenu PopUp.Util.Lower\ Case<tab>u u
-vmenu PopUp.Util.Swap\ Case<tab>~ ~
-
 " ==============================================================================
 " "Functions"               Пользовательские функции {{{1
 " ==============================================================================
@@ -654,7 +595,7 @@ function! s:Kwbd(kwbdStage)
       execute "bd " . s:kwbdBufNum
     endif
     if(!s:buflistedLeft)
-      set buflisted
+      set nobuflisted " if change to 'buflisted' it would be Scratch buffer
       set bufhidden=delete
       set buftype=nofile
       setlocal noswapfile
@@ -705,41 +646,18 @@ nmap <C-e> :CtrlPMRU<cr>
 imap <C-e> <esc>:CtrlPMRU<cr>
 
 " Список файлов в текущей директории (plugin-CtrlP)
-nmap <C-p> :CtrlP<cr>
-imap <C-p> <esc>:CtrlP<cr>
-
-menu <silent> Plugin.Finder.Buffers<tab><F6> <ESC>:CtrlPBuffer<cr>
-imenu <silent> Plugin.Finder.Buffers<tab><F6> <ESC>:CtrlPBuffer<cr>
-
-menu <silent> Plugin.Finder.Files<tab><F7> <ESC>:CtrlP<cr>
-imenu <silent> Plugin.Finder.Files<tab><F7> <ESC>:CtrlP<cr>
-
-menu <silent> Plugin.Finder.Recently<ESC> :CtrlPMRU<cr>
-imenu <silent> Plugin.Finder.Recently<ESC> :CtrlPMRU<cr>
+nmap <C-f> :CtrlP<cr>
+imap <C-f> <esc>:CtrlP<cr>
 " ==============================================================================
 " "Plugin.delimitMate" {{{2
 " ==============================================================================
 let loaded_delimitMate = 0 " 1 - will disable delimitMate
 let delimitMate_expand_cr = 1 "Expand <CR>
+" ==============================================================================
 " "Plugin.FencView" {{{2
 " ==============================================================================
 " Auto detect file encoding when you open a file
 let g:fencview_autodetect=0
-" ==============================================================================
-" "Plugin.delimitMate {{{3
-" 
-" "Plugin.Mark" {{{2
-" ==============================================================================
-" Пометить/убрать все слова совподающие со словом под курсором (plugin-Mark)
-nmap <silent>mw <Leader>m
-
-" Пометить/убрать все слова совподающие со словом под курсором (plugin-Mark)
-imenu PopUp.Mark.Mark\ Words<tab>mw <esc>mw
-nmenu PopUp.Mark.Mark\ Words<tab>mw mw
-
-" Перемещение по меткам (plugin-Mark)
-nmenu PopUp.Mark.Next\ Word<tab>\\* \*
-imenu PopUp.Mark.Next\ Word<tab>\\* <esc>\*
 " ==============================================================================
 " "Plugin.neocomplcache" {{{2
 " ==============================================================================
@@ -761,12 +679,6 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 imap <silent><C-j> <Plug>(neocomplcache_snippets_expand)
 smap <silent><C-j> <Plug>(neocomplcache_snippets_expand)
 
-" ==============================================================================
-" Включить/отключить автозавершение
-menu  Tools.Toggle\ Autocomplete<tab> :NeoComplCacheToggle <cr>
-imenu Tools.Toggle\ Autocomplete<tab> <esc>:NeoComplCacheToggle <cr>i
-
-" ==============================================================================
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_min_syntax_length = 3
 let g:neocomplcache_enable_ignore_case = 0
@@ -778,31 +690,8 @@ let g:neocomplcache_disable_select_mode_mappings = 1
 " Включение/отключение автоматики Активация по Ctrl+Space
 let g:neocomplcache_disable_auto_complete = 1
 " ==============================================================================
-" "Plugin.NERDCommenter" {{{2
-" ==============================================================================
-" Комментирование/раз комментирование участков текста
-" (plugin-NERDCommenter)
-
-vmenu PopUp.Source\ Code.-Usrsep1- :
-
-nmenu PopUp.Source\ Code.Comment :call NERDComment(0,  "alignLeft")<CR>
-vmenu PopUp.Source\ Code.Comment <ESC>:call NERDComment(1, "alignLeft")<CR>
-
-nmenu PopUp.Source\ Code.Uncomment :call NERDComment(0, "uncomment")<CR>
-vmenu PopUp.Source\ Code.Uncomment <ESC>:call NERDComment(1,  "uncomment")<CR>
-
-nmenu PopUp.Source\ Code.Toggle :call NERDComment(0, "toggle")<CR>
-vmenu PopUp.Source\ Code.Toggle <ESC>:call NERDComment(1,  "toggle")<CR>
-
-" ==============================================================================
 " "Plugin.NERDTree" {{{2
 " ==============================================================================
-" Открытие/закрытие окна NERD_Tree (plugin-NERD_Tree)
-menu .2 Plugin.File\ Explorer<tab><F8> :NERDTreeToggle<cr>
-imenu .2 Plugin.File\ Explorer<tab><F8> <ESC>:NERDTreeToggle<cr>
-
-" ==============================================================================
-
 " Обозреватель файлов (plugin-NERD_Tree)
 " map <F8> :NERDTreeToggle<cr>
 vmap <F8> <esc>:NERDTreeToggle<cr>
@@ -854,10 +743,6 @@ let g:tagbar_sort = 0
 "Открытие/закрытие окна tagbar (plugin-tagbar)
 map <Leader>t :TagbarToggle<cr>
 imap <F2> <ESC>:TagbarToggle<cr>
-
-"Открытие/закрытие окна Tagbar (plugin-tagbar)
-menu .1 Plugin.Code\ Explorer<tab><F2> :TagbarToggle<cr>
-imenu .1 Plugin.Code\ Explorer<tab><F2> <ESC>:TagbarToggle<cr>i
 " ==============================================================================
 " "Plugin.Vim-template" {{{2
 " ==============================================================================
@@ -880,26 +765,6 @@ endfunction
 nmap mm <plug>Vm_toggle_sign
 nmap mn <plug>Vm_goto_next_sign
 nmap mp <plug>Vm_goto_prev_sign
-
-" ==============================================================================
-nmenu popup.mark.-usrsep1- :
-
-" работа с метками (plugin-visualmark)
-nmenu popup.mark.set\ mark<tab>mm <esc>mm
-
-" перемещение по меткам (plugin-visualmark)
-nmenu popup.mark.next\ mark<tab>mn <esc>mn
-nmenu popup.mark.prev\ mark<tab>mp <esc>mp
-" "Plugin.Solarized" {{{2
-" ==============================================================================
-syntax enable
-let g:solarized_termcolors=256
-set background=dark
-try
-	colorscheme solarized
-catch /^Vim\%((\a\+)\)\=:E185/ 
-	echo "Solarized theme not found. Run :BundleInstall"
-endtry
 " "Plugin.VimWiki" {{{2
 " ==============================================================================
 if s:iswin
@@ -909,11 +774,8 @@ else
 endif
 " "Plugin.PowerLine" {{{2
 " ==============================================================================
-if s:iswin
-	"
-else
-	let g:Powerline_symbols = 'fancy'
-endif
+let g:Powerline_symbols = 'fancy'
+let g:Powerline_cache_enabled = 1
 " "Plugin.MiniBufExplorer" {{{2
 " =============================================================================
 let g:miniBufExplTabWrap = 1 " make tabs show complete (no broken on two lines)
