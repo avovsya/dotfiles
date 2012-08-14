@@ -4,7 +4,12 @@
 " ==============================================================================
 " "Bundles"                 Пакеты плагинов {{{1
 " ==============================================================================
+if !isdirectory(expand("~/.vim/bundle/vundle/.git"))
+  !git clone git://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+endif
+
 filetype off
+
 set runtimepath+=~/.vim/bundle/vundle/
 call vundle#rc()
 
@@ -50,9 +55,6 @@ Bundle "git://github.com/benmills/vimux.git"
 Bundle "git://github.com/vim-scripts/YankRing.vim.git"
 Bundle "git://github.com/vim-scripts/diffchanges.vim.git"
 
-
-" Wikis
-" Personal Wiki for Vim  - vimwiki
 filetype plugin indent on
 " ==============================================================================
 " "Primary"                 Приоритетные настройки {{{1
@@ -352,6 +354,7 @@ endif
 " ==============================================================================
 " Создать базу данных для файлов в текущей директории
 map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+" map <leader>rt :!ctags --extra=+f --languages=-javascript --exclude=.git --exclude=log -R * `rvm gemdir`/gems/* `rvm gemdir`/bundler/gems/*<CR><C-M>
 
 let mapleader=","
 
@@ -359,7 +362,7 @@ let mapleader=","
 " Clear the search highlight
 nnoremap <silent> <Esc><Esc> :nohlsearch<CR><ESC>
 
-" Disabel arrow keys
+" Disable arrow keys
 inoremap <Up> <NOP>
 inoremap <Down> <NOP>
 inoremap <Left> <NOP>
@@ -451,6 +454,16 @@ nmap <F8> :SessionSave<cr>
 
 " Show hiddel chars
 nmap <C-q> :call ToggleListChars()<cr>
+
+" Tabularize
+if exists(":Tab")
+  nmap <leader>a\| :Tab /\|<CR>
+  vmap <leader>a\| :Tab /\|<CR>
+  nmap <leader>a= :Tab /=<CR>
+  vmap <leader>a= :Tab /=<CR>
+  nmap <leader>a: :Tab /:\zs<CR>
+  vmap <leader>a: :Tab /:\zs<CR>
+endif
 
 " Show unsaved changes
 " http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file
