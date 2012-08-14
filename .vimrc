@@ -5,7 +5,7 @@
 " "Bundles"                 Пакеты плагинов {{{1
 " ==============================================================================
 if !isdirectory(expand("~/.vim/bundle/vundle/.git"))
-  !git clone git://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+	!git clone git://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 endif
 
 filetype off
@@ -55,6 +55,10 @@ Bundle "git://github.com/benmills/vimux.git"
 Bundle "git://github.com/vim-scripts/YankRing.vim.git"
 Bundle "git://github.com/vim-scripts/diffchanges.vim.git"
 
+Bundle "git://github.com/vim-scripts/scratch.vim.git"
+Bundle "git://github.com/vim-scripts/bufkill.vim.git"
+Bundle "git://github.com/tpope/vim-repeat.git"
+
 filetype plugin indent on
 " ==============================================================================
 " "Primary"                 Приоритетные настройки {{{1
@@ -69,6 +73,7 @@ set nocompatible
 
 " Использовать англоязычное меню
 set langmenu=en
+set ttyfast
 " ==============================================================================
 " "Quick"                   Быстрые настройки {{{1
 " ==============================================================================
@@ -213,11 +218,10 @@ elseif has("gui_gtk2")
 endif
 
 set background=dark
-let g:solarized_termcolors=256
 try
+	let g:solarized_termcolors=256
 	colorscheme solarized
-catch /^Vim\%((\a\+)\)\=:E185/ 
-	echo "Solarized theme not found. Run :BundleInstall"
+catch /^Vim\%((\a\+)\)\=:E185/
 	colorscheme desert
 endtry
 
@@ -240,16 +244,17 @@ set wildmenu        " Показывать меню в командной стр
 " для выбора вариантов авто-дополнения
 set showmatch       " Довсвечивать совпадающую скобку
 set nolist          " Не подсвечивать некоторые символы
+"set splitbelow splitright
 
 " Замена символа "-" на пробел, для свёрнутых блоков
-set fillchars=fold:\ 
+"set fillchars=fold:\
 
 " Установка символов для подсветки
 if has('multi_byte')
 	if version >= 700
-		set listchars=tab:▸\ ,trail:·,extends:»,precedes:«,nbsp:× 
+		set listchars=tab:▸\ ,trail:·,extends:»,precedes:«,nbsp:×
 	else
-		set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:_ 
+		set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:_
 	endif
 endif
 
@@ -275,11 +280,6 @@ set tabstop=4
 " ==============================================================================
 set hlsearch        " Включение подсветки слов при поиске
 set incsearch       " Использовать поиск по мере набора
-
-" Использовать регистра-зависимый поиск (для
-" регистра-независимого использовать \с в конце строки шаблона)
-"set noignorecase
-
 set ignorecase " игнорировать регистр при поиске
 set smartcase  " искать сначала по заданному регистру а потом в любом
 set gdefault   " 'g' flag for all commands like :%s/a/b
@@ -352,15 +352,11 @@ endif
 " ==============================================================================
 " "Mappings"                Горячие клавиши {{{1
 " ==============================================================================
-" Создать базу данных для файлов в текущей директории
-map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-" map <leader>rt :!ctags --extra=+f --languages=-javascript --exclude=.git --exclude=log -R * `rvm gemdir`/gems/* `rvm gemdir`/bundler/gems/*<CR><C-M>
-
 let mapleader=","
 
-" <Esc><Esc>
-" Clear the search highlight
-nnoremap <silent> <Esc><Esc> :nohlsearch<CR><ESC>
+" "MISC"	{{{2
+
+inoremap jj <Esc>
 
 " Disable arrow keys
 inoremap <Up> <NOP>
@@ -368,25 +364,53 @@ inoremap <Down> <NOP>
 inoremap <Left> <NOP>
 inoremap <Right> <NOP>
 
+" Page down with <Space>
+nmap <Space> <PageDown>
+
 " Move in insert mode with Ctrl+h,j,k,l
 imap <C-h> <C-o>h
 imap <C-j> <C-o>j
 imap <C-k> <C-o>k
 imap <C-l> <C-o>l
+
 " Move in command line with Ctrl+h,j,k,l
 cmap <C-h> <Left>
 cmap <C-j> <Down>
 cmap <C-k> <Up>
 cmap <C-l> <Right>
 
-" Создаем пустой сплит относительно текущего
-nmap <Leader><left>  :leftabove  vnew<CR>
-nmap <Leader><right> :rightbelow vnew<CR>
-nmap <Leader><down>  :rightbelow new<CR>
-nmap <Leader><up>    :leftabove  new<CR>
+" Show hidden chars
+nmap <C-q> :call ToggleListChars()<cr>
 
+" Ctrl+S
+map <C-s> <esc>:w<CR>
+imap <C-s> <C-o>:w<CR>
+
+" ,p Paste helper
+set pastetoggle=<Leader>p
+
+" Edit another file in the same directory as the current file
+" uses expression to extract path from current file's path
+map <Leader>n :vnew <C-R>=expand("%:p:h") . '/'<CR>
+
+" ,g Toggle GUI Noise
+map <Leader>g <Esc>:call ToggleGUINoise()<cr>
+
+" Show unsaved changes
+" http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file
+" http://stackoverflow.com/questions/749297/can-i-see-changes-before-i-save-my-file-in-vim
+nmap <Leader>z :DiffChangesDiffToggle<CR>
+
+" "SPLITS AND BUFFERS"	{{{2
+" Создаем пустой сплит относительно текущего
 nmap <Leader><Bar> :rightbelow vnew <bar> set nobuflisted<CR>
 nmap <Leader>- :rightbelow new <bar> set nobuflisted<CR>
+
+" Переключение по сплитам
+nmap <C-h> <C-W>h
+nmap <C-j> <C-W>j
+nmap <C-k> <C-W>k
+nmap <C-l> <C-W>l
 
 " Resize window
 noremap <Up> 5<C-W>+
@@ -394,8 +418,39 @@ noremap <Down> 5<C-W>-
 noremap <Left> 5<C-W><
 noremap <Right> 5<C-W>>
 
-" Page down with <Space>
-nmap <Space> <PageDown>
+" ,bl show buffers
+nmap <Leader>bl :ls<cr>:b
+nmap <Leader>bp :bp<cr>
+nmap <Leader>bn :bn<cr>
+nmap <S-Tab> :bp<cr>
+nmap <Tab> :bn<cr>
+
+" Wipeout buffer but save split
+"nmap <Leader>qq <Plug>Kwbd
+nmap <Leader>qq :BW<CR>
+
+" Wipeout buffer and close split
+nmap <Leader>qw :bw<CR>
+
+" "FORMATING" {{{2
+" Reformat whole file
+nmap <Leader>ff gg=G''
+
+" Remove trailing spaces
+nmap <Leader>f<Space> :%s/\s\+$//<cr>''
+
+" Yank to the end of the line
+nnoremap Y y$
+
+" "FIND AND REPLACE IN FILE" {{{2
+" Replace the word under cursor
+nnoremap <Leader>rr :call Replace(1)<CR>
+
+" Quick replace
+nnoremap <Leader>rs :call Replace(0)<CR>
+
+" <Esc><Esc>  Clear the search highlight
+nnoremap <silent> <Esc><Esc> :nohlsearch<CR><ESC>
 
 " Centered search results
 nmap n nzz
@@ -405,70 +460,42 @@ nmap g# g#zz
 nmap * *zz
 nmap # #zz
 
-nnoremap Y y$
-
-" Ctrl+k+d
-nmap <C-k>d gg=G''
-
-" Ctrl+S
-map <C-s> <esc>:w<CR>
-imap <C-s> <C-o>:w<CR>
-
-" ,p Paste helper
-set pastetoggle=<Leader>p
-
-" Replace the word under cursor
-nnoremap <Leader>r :call Replace(1)<CR>
-" Quick replace
-nnoremap <Leader>s :call Replace(0)<CR>
-
-" Переключение по сплитам
-nmap <C-h> <C-W>h
-nmap <C-j> <C-W>j
-nmap <C-k> <C-W>k
-nmap <C-l> <C-W>l
-
+" "EDIT THING"	{{{2
 " ,ev open _vimrc in new tab
 nmap <leader>ev :e $MYVIMRC<CR>
+"
+" ,ei open _vimrc in new tab
+nmap <leader>ei :e .gitignore<CR>
 
-" Edit another file in the same directory as the current file
-" uses expression to extract path from current file's path
-map <Leader>n :vnew <C-R>=expand("%:p:h") . '/'<CR>
+" "SESSIONS"	{{{2
+nmap <Leader>sl :SessionList<cr>
+nmap <Leader>ss :SessionSave<cr>
+nmap <Leader>sS :SessionSaveAs<cr>
 
-" ,g Toggle GUI Noise
-map <Leader>g <Esc>:call ToggleGUINoise()<cr>
-
-" ,bl show buffers
-nmap <Leader>bl :ls<cr>:b
-nmap <Leader>h :bp<cr>
-nmap <Leader>l :bn<cr>
-
-" Delete buffer but save split
-nmap <Leader>q <Plug>Kwbd
-" Delete buffer and close split
-nmap <Leader>c :bw<CR>
-
-" Sessions
-nmap <C-o> :SessionList<cr>
-nmap <F8> :SessionSave<cr>
-
-" Show hiddel chars
-nmap <C-q> :call ToggleListChars()<cr>
-
+" "ALIGN"	{{{2
 " Tabularize
 if exists(":Tab")
-  nmap <leader>a\| :Tab /\|<CR>
-  vmap <leader>a\| :Tab /\|<CR>
-  nmap <leader>a= :Tab /=<CR>
-  vmap <leader>a= :Tab /=<CR>
-  nmap <leader>a: :Tab /:\zs<CR>
-  vmap <leader>a: :Tab /:\zs<CR>
+	nmap <leader>a\| :Tab /\|<CR>
+	vmap <leader>a\| :Tab /\|<CR>
+	nmap <leader>a= :Tab /=<CR>
+	vmap <leader>a= :Tab /=<CR>
+	nmap <leader>a: :Tab /:\zs<CR>
+	vmap <leader>a: :Tab /:\zs<CR>
+	nmap <leader>a :Tab /
+	vmap <leader>a :Tab /
 endif
+" "TAGS"	{{{2
+"Открытие/закрытие окна tagbar (plugin-tagbar)
+map <Leader>tt :TagbarToggle<cr>
+" Создать базу данных для файлов в текущей директории
+"map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+" map <leader>tg :!ctags --extra=+f --languages=-javascript --exclude=.git --exclude=log -R * `rvm gemdir`/gems/* `rvm gemdir`/bundler/gems/*<CR><C-M>
 
-" Show unsaved changes
-" http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file
-" http://stackoverflow.com/questions/749297/can-i-see-changes-before-i-save-my-file-in-vim
-nmap <Leader>z :DiffChangesDiffToggle<CR>
+" "YANK RING"	{{{2
+" ==============================================================================
+nmap <Leader>yy :YRShow<CR>
+" ==============================================================================
+" }}}
 " ==============================================================================
 " "Functions"               Пользовательские функции {{{1
 " ==============================================================================
@@ -529,69 +556,6 @@ function! SetCursorPosition()
 		endif
 	end
 endfunction
-
-"here is a more exotic version of my original Kwbd script
-"delete the buffer; keep windows; create a scratch buffer if no buffers left
-function! s:Kwbd(kwbdStage)
-	if(a:kwbdStage == 1)
-		if(!buflisted(winbufnr(0)))
-			bd!
-			return
-		endif
-		let s:kwbdBufNum = bufnr("%")
-		let s:kwbdWinNum = winnr()
-		windo call s:Kwbd(2)
-		execute s:kwbdWinNum . 'wincmd w'
-		let s:buflistedLeft = 0
-		let s:bufFinalJump = 0
-		let l:nBufs = bufnr("$")
-		let l:i = 1
-		while(l:i <= l:nBufs)
-			if(l:i != s:kwbdBufNum)
-				if(buflisted(l:i))
-					let s:buflistedLeft = s:buflistedLeft + 1
-				else
-					if(bufexists(l:i) && !strlen(bufname(l:i)) && !s:bufFinalJump)
-						let s:bufFinalJump = l:i
-					endif
-				endif
-			endif
-			let l:i = l:i + 1
-		endwhile
-		if(!s:buflistedLeft)
-			if(s:bufFinalJump)
-				windo if(buflisted(winbufnr(0))) | execute "b! " . s:bufFinalJump | endif
-		else
-			enew
-			let l:newBuf = bufnr("%")
-			windo if(buflisted(winbufnr(0))) | execute "b! " . l:newBuf | endif
-	endif
-	execute s:kwbdWinNum . 'wincmd w'
-endif
-if(buflisted(s:kwbdBufNum) || s:kwbdBufNum == bufnr("%"))
-	execute "bw " . s:kwbdBufNum
-endif
-if(!s:buflistedLeft)
-	set nobuflisted " if change to 'buflisted' it would be Scratch buffer
-	set bufhidden=delete
-	set buftype=nofile
-	setlocal noswapfile
-endif
-  else
-	  if(bufnr("%") == s:kwbdBufNum)
-		  let prevbufvar = bufnr("#")
-		  if(prevbufvar > 0 && buflisted(prevbufvar) && prevbufvar != s:kwbdBufNum)
-			  b #
-		  else
-			  bn
-		  endif
-	  endif
-  endif
-endfunction
-
-command! Kwbd call <SID>Kwbd(1)
-nnoremap <silent> <Plug>Kwbd :<C-u>Kwbd<CR>
-
 " ==============================================================================
 " "Fix"                     Способы устранения непоняток с настройками {{{1
 "
@@ -650,7 +614,7 @@ if !has("gui_running")
 endif
 
 " <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>" 
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
 " Раскрыть сниппет/переход по сниппету (plugin-neocomplcache)
 imap <silent><C-j> <Plug>(neocomplcache_snippets_expand)
@@ -681,7 +645,7 @@ let NERDTreeWinPos = 'right'
 
 let NERDTreeIgnore = ['\~$', '*.pyc', '*.pyo']
 " let NERDChristmasTree = 0
-" let NERDTreeMinimalUI=1
+"let NERDTreeMinimalUI=1
 
 nmap <Bs> :NERDTreeToggle<CR>
 let NERDTreeShowBookmarks=1
@@ -714,12 +678,6 @@ let g:tagbar_iconchars = ['▶', '◢']
 
 " Не сортировать
 let g:tagbar_sort = 0
-
-" ==============================================================================
-
-"Открытие/закрытие окна tagbar (plugin-tagbar)
-map <Leader>t :TagbarToggle<cr>
-imap <F2> <ESC>:TagbarToggle<cr>
 " ==============================================================================
 " "Plugin.Vim-template" {{{2
 " ==============================================================================
@@ -744,7 +702,11 @@ else
 endif
 " "Plugin.PowerLine" {{{2
 " ==============================================================================
-let g:Powerline_symbols = 'fancy'
+if s:iswin
+	let g:Powerline_symbols = 'unicode'
+else
+	let g:Powerline_symbols = 'fancy'
+endif
 let g:Powerline_cache_enabled = 1
 " "Plugin.MiniBufExplorer" {{{2
 " =============================================================================
