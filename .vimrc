@@ -62,6 +62,13 @@ endif
 "    echo 'foldmethod is now ' . &l:foldmethod
 "endfunction
 
+" System clipboard interaction.  Mostly from:
+" https://github.com/henrik/dotfiles/blob/master/vim/config/mappings.vim
+noremap <leader>y "*y
+noremap <leader>p :set paste<CR>"*p<CR>:set nopaste<CR>
+noremap <leader>P :set paste<CR>"*P<CR>:set nopaste<CR>
+vnoremap <leader>y "*ygv
+
 " ==============================================================================
 
 filetype off
