@@ -10,14 +10,6 @@ endif
 
 " Need to review
 " ==============================================================================
-	" Windows Compatible {
-		" On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
-		" across (heterogeneous) systems easier. 
-		"if has('win32') || has('win64')
-		 " set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
-		"endif
-	" }
-
 
 	" set virtualedit=onemore 	   	" allow for cursor beyond last character
 	" http://www.uvm.edu/~gcd/2008/12/virtualedit-in-vim/
@@ -73,13 +65,23 @@ vnoremap <leader>y "*ygv
 "command! -nargs=* Wrap set wrap linebreak nolist | set showbreak=…
 " execute "Wrap"
 
-" <m-j> and <m-k> to drag lines in any mode
-noremap ∆ :m+<CR>
-noremap ˚ :m-2<CR>
-inoremap ∆ <Esc>:m+<CR>
-inoremap ˚ <Esc>:m-2<CR>
-vnoremap ∆ :m'>+<CR>gv
-vnoremap ˚ :m-2<CR>gv
+" It's 2012.
+"noremap j gj
+"noremap k gk
+"noremap gj j
+"noremap gk k
+
+
+"let g:badwolf_html_link_underline = 0
+"colorscheme badwolf
+
+" Reload the colorscheme whenever we write the file.
+"augroup color_badwolf_dev
+"    au!
+"    au BufWritePost badwolf.vim color badwolf
+"augroup END
+
+
 
 " ==============================================================================
 
@@ -267,7 +269,8 @@ if v:version >= 703
 endif
 
 set backupdir=~/.vim/tmp/bac//,/tmp
-set directory=~/.vim/tmp/swp//,/tmp
+set backup
+set noswapfile
 " ==============================================================================
 " "GUI"                     Вид {{{1
 " ==============================================================================
