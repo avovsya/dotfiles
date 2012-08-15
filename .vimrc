@@ -73,6 +73,14 @@ vnoremap <leader>y "*ygv
 "command! -nargs=* Wrap set wrap linebreak nolist | set showbreak=…
 " execute "Wrap"
 
+" <m-j> and <m-k> to drag lines in any mode
+noremap ∆ :m+<CR>
+noremap ˚ :m-2<CR>
+inoremap ∆ <Esc>:m+<CR>
+inoremap ˚ <Esc>:m-2<CR>
+vnoremap ∆ :m'>+<CR>gv
+vnoremap ˚ :m-2<CR>gv
+
 " ==============================================================================
 
 filetype off
