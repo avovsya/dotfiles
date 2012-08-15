@@ -8,6 +8,62 @@ if !isdirectory(expand("~/.vim/bundle/vundle/.git"))
 	!git clone git://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 endif
 
+" Need to review
+" ==============================================================================
+	" Windows Compatible {
+		" On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
+		" across (heterogeneous) systems easier. 
+		"if has('win32') || has('win64')
+		 " set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+		"endif
+	" }
+
+
+	" set virtualedit=onemore 	   	" allow for cursor beyond last character
+	" http://www.uvm.edu/~gcd/2008/12/virtualedit-in-vim/
+
+		"" Creating directories if they don't exist
+		"silent execute '!mkdir -p $HVOME/.vimbackup'
+		"silent execute '!mkdir -p $HOME/.vimswap'
+		"silent execute '!mkdir -p $HOME/.vimviews'
+
+
+	" nnoremap ; :
+
+    " Wrapped lines goes down/up to next row, rather than next line in file.
+    " nnoremap j gj
+    " nnoremap k gk
+
+" visual shifting (does not exit Visual mode)
+	" vnoremap < <gv
+	" vnoremap > >gv
+
+" ShowMarks {
+		" let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		" Don't leave on by default, use :ShowMarksOn to enable
+		" let g:showmarks_enable = 0
+		" For marks a-z
+		" highlight ShowMarksHLl gui=bold guibg=LightBlue guifg=Blue
+		" For marks A-Z
+		" highlight ShowMarksHLu gui=bold guibg=LightRed guifg=DarkRed
+		" For all other marks
+		" highlight ShowMarksHLo gui=bold guibg=LightYellow guifg=DarkYellow
+		" For multiple marks on the same line.
+		" highlight ShowMarksHLm gui=bold guibg=LightGreen guifg=DarkGreen
+	" }
+
+"nmap <Leader>ff :call <SID>ToggleFold()<CR>
+"function! s:ToggleFold()
+"    if &foldmethod == 'marker'
+"        let &l:foldmethod = 'syntax'
+"    else
+"        let &l:foldmethod = 'marker'
+"    endif
+"    echo 'foldmethod is now ' . &l:foldmethod
+"endfunction
+
+" ==============================================================================
+
 filetype off
 
 set runtimepath+=~/.vim/bundle/vundle/
