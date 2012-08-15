@@ -69,6 +69,10 @@ noremap <leader>p :set paste<CR>"*p<CR>:set nopaste<CR>
 noremap <leader>P :set paste<CR>"*P<CR>:set nopaste<CR>
 vnoremap <leader>y "*ygv
 
+" Soft line 
+"command! -nargs=* Wrap set wrap linebreak nolist | set showbreak=…
+" execute "Wrap"
+
 " ==============================================================================
 
 filetype off
