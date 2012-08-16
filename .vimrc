@@ -2,36 +2,16 @@
 " Файл пользовательских настроек vim (7.3)
 " Maintrainer: azz
 " ==============================================================================
-" "Bundles"                 Пакеты плагинов {{{1
+" "Bundles"                 {{{1
 " ==============================================================================
-if !isdirectory(expand("~/.vim/bundle/vundle/.git"))
-	!git clone git://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+if !isdirectory(expand($HOME . "/.vim/bundle/vundle/.git"))
+	system("git clone git://github.com/gmarik/vundle.git " . $HOME/bundle/vundle)
 endif
 
 " Need to review
 " ==============================================================================
-
-	" set virtualedit=onemore 	   	" allow for cursor beyond last character
-	" http://www.uvm.edu/~gcd/2008/12/virtualedit-in-vim/
-
-		"" Creating directories if they don't exist
-		"silent execute '!mkdir -p $HVOME/.vimbackup'
-		"silent execute '!mkdir -p $HOME/.vimswap'
-		"silent execute '!mkdir -p $HOME/.vimviews'
-
-
-	" nnoremap ; :
-
-    " Wrapped lines goes down/up to next row, rather than next line in file.
-    " nnoremap j gj
-    " nnoremap k gk
-
-" visual shifting (does not exit Visual mode)
-	" vnoremap < <gv
-	" vnoremap > >gv
-
 " ShowMarks {
-		" let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		" let showmarks_include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		" Don't leave on by default, use :ShowMarksOn to enable
 		" let g:showmarks_enable = 0
 		" For marks a-z
@@ -44,50 +24,11 @@ endif
 		" highlight ShowMarksHLm gui=bold guibg=LightGreen guifg=DarkGreen
 	" }
 
-"nmap <Leader>ff :call <SID>ToggleFold()<CR>
-"function! s:ToggleFold()
-"    if &foldmethod == 'marker'
-"        let &l:foldmethod = 'syntax'
-"    else
-"        let &l:foldmethod = 'marker'
-"    endif
-"    echo 'foldmethod is now ' . &l:foldmethod
-"endfunction
-
-" System clipboard interaction.  Mostly from:
-" https://github.com/henrik/dotfiles/blob/master/vim/config/mappings.vim
-noremap <leader>y "*y
-noremap <leader>p :set paste<CR>"*p<CR>:set nopaste<CR>
-noremap <leader>P :set paste<CR>"*P<CR>:set nopaste<CR>
-vnoremap <leader>y "*ygv
-
-" Soft line 
-"command! -nargs=* Wrap set wrap linebreak nolist | set showbreak=…
-" execute "Wrap"
-
-" It's 2012.
-"noremap j gj
-"noremap k gk
-"noremap gj j
-"noremap gk k
-
-
-"let g:badwolf_html_link_underline = 0
-"colorscheme badwolf
-
-" Reload the colorscheme whenever we write the file.
-"augroup color_badwolf_dev
-"    au!
-"    au BufWritePost badwolf.vim color badwolf
-"augroup END
-
-
-
 " ==============================================================================
 
 filetype off
 
-set runtimepath+=~/.vim/bundle/vundle/
+set runtimepath+=$HOME/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle "git://github.com/gmarik/vundle.git"
@@ -113,7 +54,6 @@ Bundle "git://github.com/scrooloose/syntastic.git"
 Bundle "git://github.com/kien/ctrlp.vim.git"
 Bundle "git://github.com/kchmck/vim-coffee-script.git"
 Bundle "git://github.com/rom399/vim-colors.git"
-Bundle 'git://github.com/altercation/vim-colors-solarized.git'
 Bundle "git://github.com/digitaltoad/vim-jade.git"
 Bundle "git://github.com/skammer/vim-css-color.git"
 Bundle 'git://github.com/vim-scripts/IndexedSearch.git'
@@ -136,35 +76,47 @@ Bundle "git://github.com/vim-scripts/scratch.vim.git"
 Bundle "git://github.com/vim-scripts/bufkill.vim.git"
 Bundle "git://github.com/tpope/vim-repeat.git"
 
+" Colorschemes
+Bundle "git://github.com/sjl/badwolf.git"
+Bundle 'git://github.com/altercation/vim-colors-solarized.git'
+
+
 filetype plugin indent on
 " ==============================================================================
-" "Primary"                 Приоритетные настройки {{{1
+" "Primary"                 {{{1
 " ==============================================================================
 let s:iswin = has('win32') || has('win64')
 
-let $TEMP = '~/.vim/tmp'
-let $VIMHOME = '~/.vim'
+" Creating directories if they don't exist
+"silent execute '!mkdir -p $HOME/.vim'
+"silent execute '!mkdir -p $HOME/.vim/tmp'
+"silent execute '!mkdir -p $HOME/.vim/tmp/bac'
+"silent execute '!mkdir -p $HOME/.vim/tmp/undo'
 
+let $TEMP = $HOME . '/.vim/tmp'
+let $VIMHOME = $HOME . '/.vim'
 " Отключение совместимости с vi
 set nocompatible
 
 " Использовать англоязычное меню
 set langmenu=en
-set ttyfast
 " ==============================================================================
-" "Quick"                   Быстрые настройки {{{1
+" "Quick"                   {{{1
 " ==============================================================================
 " (0 - откл. 1 - вкл.)
-let s:us_folding              = 1 " Свертывание участков кода
-let s:us_linewrap             = 0 " Перенос длинных строк
-let s:us_goto_last_pos        = 1 " Перемещать курсор на предыдущую позицию
-" при открытии файла
+let s:us_folding       = 1 " Свертывание участков кода
+let s:us_linewrap      = 1 " Перенос длинных строк
+let s:us_goto_last_pos = 1 " Перемещать курсор на предыдущую позицию при открытии файла
+let s:us_spell         = 0
 " ==============================================================================
-" "General"                 Основные настройки {{{1
+" "General"                 {{{1
 " ==============================================================================
 " AutoReload .vimrc
 if has("autocmd")
 	autocmd! bufwritepost .vimrc source $MYVIMRC
+	if s:iswin
+		autocmd! bufwritepost _vimrc source $MYVIMRC
+	endif
 endif
 
 " Включение подсветки синтаксиса
@@ -176,9 +128,10 @@ filetype plugin indent on
 " Отключение оповещения морганием и звуком
 set novisualbell
 set t_vb=
-
 " Disable bell in GUI
 autocmd GUIEnter * set novisualbell t_vb=
+
+set ttyfast
 
 " Язык помощи
 set helplang=en,ru
@@ -195,12 +148,14 @@ set whichwrap+=[,]
 set hidden
 
 set autoread            " Включение автоматического перечтения файла при изменении
-"set autochdir           " Автоматически устанавливать текущей, директорию отрытого файла
+if s:iswin
+	set autochdir           " Автоматически устанавливать текущей, директорию отрытого файла
+endif
 set browsedir=buffer    " Начинать обзор с каталога текущего буфера
 set confirm             " Включение диалогов с запросами
 
 " Опции авто-дополнения
-set completeopt=longest,menuone
+set completeopt=longest,menuone,preview
 
 " Если данная опция включена, то это позволяет отображать как имя метки,
 " так и отредактированную форму шаблона поиска (если такая имеется), в
@@ -216,17 +171,19 @@ set showfulltag
 set wildmode=list:longest,full
 
 " Игнорировать данные файлы при автозавершении имён
-set wildignore=*.o,*.obj,*.bak,*.exe,*.pyc,*.pyo,.hg,.git,.svn
+set wildignore=.svn,CVS,.git,.hg,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,.DS_Store,*.aux,*.out,*.toc
 
 " Включение проверки орфографии, для русского и английского
-set spelllang=ru_yo,en_us
-"set spell
+if s:us_spell
+	set spelllang=ru_yo,en_us
+	set spell
+endif
 
 " Раскладка по умолчанию - английская
 set iminsert=0
 
 " Не перерисовывать окно при работе макросов
-"set lazyredraw
+set lazyredraw
 
 " Испольвозать англоязычный интерфес
 if s:iswin
@@ -239,7 +196,7 @@ endif
 "set langmap=ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
 
 " ==============================================================================
-" "Files"                   Настройки для файлов {{{1
+" "Files"                   {{{1
 " ==============================================================================
 
 " Кодировка по умолчанию
@@ -252,7 +209,7 @@ set fileformat=unix          " Формат файла по умолчанию
 set fileformats=unix,dos,mac " Порядок определения формата файла
 
 " ==============================================================================
-" "Backup,Undo,Swap"        Резервное копирование {{{1 "
+" "Backup,Undo,Swap"        {{{1
 " ==============================================================================
 " История команд
 set history=1000
@@ -264,15 +221,15 @@ set undolevels=5000
 
 " Настройки отмены изменений
 if v:version >= 703
-	set undodir=$TEMP
+	set undodir=$TEMP/undo
 	set undofile
 endif
 
-set backupdir=~/.vim/tmp/bac//,/tmp
-set backup
 set noswapfile
+set backup
+set backupdir=$TEMP/bac//,/tmp
 " ==============================================================================
-" "GUI"                     Вид {{{1
+" "GUI"                     {{{1
 " ==============================================================================
 set t_Co=256	" 256 colors in terminal
 set ruler       " Включение отображения позиции курсора (всё время)
@@ -285,9 +242,15 @@ set guicursor=  " Switch off cursor blink
 set cursorline  " Включить подсветку текущей позиции курсора
 set cursorcolumn
 set mousemodel=popup
+set colorcolumn=0
 
+" Move beyond actual end of the line. If set to 1 = one more column at the end of the line
+" http://www.uvm.edu/~gcd/2008/12/virtualedit-in-vim/
+"set virtualedit=all
+set virtualedit=onemore
+
+" Cursor line always in center of the screen
 set scrolloff=999
-
 
 if s:iswin
 	set gfn=DejaVu_Sans_Mono:h10:,cRUSSIANconsolas:h11,
@@ -297,8 +260,10 @@ endif
 
 set background=dark
 try
-	let g:solarized_termcolors=256
-	colorscheme solarized
+	"let g:solarized_termcolors=256
+	"colorscheme solarized
+	"colorscheme badwolf
+	colorscheme mustang
 catch /^Vim\%((\a\+)\)\=:E185/
 	colorscheme desert
 endtry
@@ -308,24 +273,19 @@ if s:iswin
 	winsize 90 30
 endif
 
-set guioptions-=b   " Отключение скролл-баров
-set guioptions-=r
-set guioptions-=T   " Убрать toolbar
+set guioptions=
 set guioptions+=c   " Отключение графических диалогов
-set guioptions-=e   " Замена графических табов, текстовыми
 
-set number          " Включение отображения номеров строк
+set nonumber          " Включение отображения номеров строк
 set numberwidth=5
 set shortmess+=I    " Отключение приветственного сообщения
-"set showtabline=2   " Показывать по умлочанию строку со вкладками Use MiniBufExplore instead
 set wildmenu        " Показывать меню в командной строке
 " для выбора вариантов авто-дополнения
 set showmatch       " Довсвечивать совпадающую скобку
 set nolist          " Не подсвечивать некоторые символы
-"set splitbelow splitright
 
-" Замена символа "-" на пробел, для свёрнутых блоков
-"set fillchars=fold:\
+" Replace fold's hyphen with dot
+set fillchars=fold:\·
 
 " Установка символов для подсветки
 if has('multi_byte')
@@ -339,13 +299,13 @@ endif
 " Подсветка всех слов под курсором
 "autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 " ==============================================================================
-" "Statusline"              Статусная строка {{{1
+" "Statusline"              {{{1
 " ==============================================================================
 " Включение отображения незавершенных команд в статусной строке
 set showcmd
 set laststatus=2
 " ==============================================================================
-" "Indent"                  Отступы и табуляция {{{1
+" "Indent"                  {{{1
 " ==============================================================================
 set autoindent                          " Наследовать отступы предыдущей строки
 set smartindent                         " Включить 'умные' отступы
@@ -354,7 +314,7 @@ set shiftwidth=4                        " Размер табуляции по �
 set softtabstop=4
 set tabstop=4
 " ==============================================================================
-" "Search"                  Поиск текста {{{1
+" "Search"                  {{{1
 " ==============================================================================
 set hlsearch        " Включение подсветки слов при поиске
 set incsearch       " Использовать поиск по мере набора
@@ -365,14 +325,14 @@ set gdefault   " 'g' flag for all commands like :%s/a/b
 " В режиме поиска используется раскладка, заданная по умолчанию
 set imsearch=-1
 " ==============================================================================
-" "Folding"                 Свертывание блоков текста {{{1
+" "Folding"                 {{{1
 " ==============================================================================
 if s:us_folding
 	" Включение складок
 	set foldenable
 
 	" Ширина колонки
-	"set foldcolumn=4
+	set foldcolumn=0
 
 	" Опция задаёт значение опции 'foldlevel' в начале редактирования нового
 	" буфера в окне. Её полезно использовать для закрытия всех складок в
@@ -396,43 +356,64 @@ if s:us_folding
 	" не работает, поскольку встроенное ограничение количества вложений в
 	" складках соответствует 20
 	set foldnestmax=3
+    set fdc=0
+
+	"nmap <Leader>ff :call <SID>ToggleFold()<CR>
+	"function! s:ToggleFold()
+	"    if &foldmethod == 'marker'
+	"        let &l:foldmethod = 'syntax'
+	"    else
+	"        let &l:foldmethod = 'marker'
+	"    endif
+	"    echo 'foldmethod is now ' . &l:foldmethod
+	"endfunction
+
 else
 	set nofoldenable
 	set foldmethod=manual
-
 endif
-
 " ==============================================================================
-" "Sessions"                Сессии {{{1
+" "Sessions"                {{{1
 " ==============================================================================
 " Опции сессий
 set sessionoptions=curdir,buffers,folds,tabpages,winpos,help,blank,resize,winpos,winsize
 " Опции помогают переносить файлы сессий с *nix`ов в ms-windows и наоборот
 set sessionoptions+=unix,slash
 " ==============================================================================
-" "LineWrap"                Перенос длинных строк {{{1
+" "LineWrap"                {{{1
 " ==============================================================================
+command! -nargs=* Wrap set wrap linebreak nolist | set showbreak=↳  
 if s:us_linewrap
-	" Задать ширину строки
-	set textwidth=80
-	" Перенос по словам
-	set linebreak
-	if v:version >= 703
-		" Подсвечивать границы
-		set colorcolumn=80
-	endif
-	let &sbr = nr2char(8618).' ' "Show -> at the beginning of wraped line
+	" Soft line wrap
+	execute "Wrap"
 	set wrap
 else
 	" Запретить перенос строк
 	set nowrap
 endif
 " ==============================================================================
-" "Mappings"                Горячие клавиши {{{1
+" "Mappings"                {{{1
 " ==============================================================================
 let mapleader=","
 
 " "MISC"	{{{2
+noremap j gj
+noremap k gk
+noremap gj j
+noremap gk k
+
+" System clipboard interaction.  Mostly from:
+" https://github.com/henrik/dotfiles/blob/master/vim/config/mappings.vim
+noremap <leader>y "*y
+noremap <leader>p :set paste<CR>"*p<CR>:set nopaste<CR>
+noremap <leader>P :set paste<CR>"*P<CR>:set nopaste<CR>
+vnoremap <leader>y "*ygv
+
+nnoremap ; :
+
+" visual shifting (does not exit Visual mode)
+vnoremap < <gv
+vnoremap > >gv
 
 inoremap jj <Esc>
 
@@ -458,21 +439,19 @@ cmap <C-k> <Up>
 cmap <C-l> <Right>
 
 " Show hidden chars
-nmap <C-q> :call ToggleListChars()<cr>
+nmap <Leader>i :call ToggleListChars()<cr>
 
 " Ctrl+S
 map <C-s> <esc>:w<CR>
 imap <C-s> <C-o>:w<CR>
-
-" ,p Paste helper
-set pastetoggle=<Leader>p
 
 " Edit another file in the same directory as the current file
 " uses expression to extract path from current file's path
 map <Leader>n :vnew <C-R>=expand("%:p:h") . '/'<CR>
 
 " ,g Toggle GUI Noise
-map <Leader>g <Esc>:call ToggleGUINoise()<cr>
+map <Leader>gg <Esc>:call ToggleGUINoise()<cr>
+map <Leader>gd <Esc>:call ToggleDistractionFree()<cr>
 
 " Show unsaved changes
 " http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file
@@ -495,6 +474,7 @@ noremap <Up> 5<C-W>+
 noremap <Down> 5<C-W>-
 noremap <Left> 5<C-W><
 noremap <Right> 5<C-W>>
+noremap <Leader>= <C-W>=
 
 " ,bl show buffers
 nmap <Leader>bl :ls<cr>:b
@@ -510,6 +490,9 @@ nmap <Leader>qq :BW<CR>
 " Wipeout buffer and close split
 nmap <Leader>qw :bw<CR>
 
+" Close split
+nmap <Leader>qs <C-W>c
+
 " "FORMATING" {{{2
 " Reformat whole file
 nmap <Leader>ff gg=G''
@@ -522,10 +505,13 @@ nnoremap Y y$
 
 " "FIND AND REPLACE IN FILE" {{{2
 " Replace the word under cursor
-nnoremap <Leader>rr :call Replace(1)<CR>
+nnoremap <Leader>rr :call Replace(1, 0)<CR>
 
 " Quick replace
-nnoremap <Leader>rs :call Replace(0)<CR>
+nnoremap <Leader>rs :call Replace(0, 0)<CR>
+
+" Replace in visual mode
+vnoremap <Leader>r :call Replace(0, 1)<CR>
 
 " <Esc><Esc>  Clear the search highlight
 nnoremap <silent> <Esc><Esc> :nohlsearch<CR><ESC>
@@ -544,6 +530,9 @@ nmap <leader>ev :e $MYVIMRC<CR>
 "
 " ,ei open _vimrc in new tab
 nmap <leader>ei :e .gitignore<CR>
+
+" Scratch buffer
+nmap <leader>es :Sscratch<cr>
 
 " "SESSIONS"	{{{2
 nmap <Leader>sl :SessionList<cr>
@@ -572,22 +561,39 @@ map <Leader>tt :TagbarToggle<cr>
 " "YANK RING"	{{{2
 " ==============================================================================
 nmap <Leader>yy :YRShow<CR>
+let g:yankring_replace_n_pkey = '<leader>['
+let g:yankring_replace_n_nkey = '<leader>]'
+let g:yankring_history_dir = $TEMP
 " ==============================================================================
 " }}}
 " ==============================================================================
-" "Functions"               Пользовательские функции {{{1
+" "Functions"               {{{1
 " ==============================================================================
 let s:cmdline = ""
 
 function! ToggleGUINoise()
-	if &go==''
-		"exec('se go=mTrL')
-		exec('se go=mrL')
+	if &go=='c'
+		exec('se go=mL')
 		exec('se go-=b')
 		echo "Show GUI elements"
 	else
 		exec('se go=')
+		exec('se go+=c')
 		echo "Show no GUI elements"
+	endif
+endfunction
+
+function! ToggleDistractionFree()
+	if &colorcolumn > 0
+		exec('set fdc=0')
+		exec('set nonu')
+		exec('set colorcolumn=0')
+		echo "Distraction free"
+	else
+		exec('set fdc=1')
+		exec('set nu')
+		exec('set colorcolumn=80')
+		echo "Interface"
 	endif
 endfunction
 
@@ -608,7 +614,12 @@ function! s:OpenFileInDefaultApp()
 	endif
 endfunction
 
-function! Replace(state)
+function! Replace(state, visual)
+	if(a:visual==1)
+		let s:com = "'<,'>"
+	else
+		let s:com = "%"
+	endif
 	if(a:state==1)
 		let s:word = input("Replace `" . expand('<cword>') . "` with: ")
 		:exe '%s/\<' . expand('<cword>') . '\>/' . s:word . '/gce'
@@ -616,7 +627,7 @@ function! Replace(state)
 	else
 		let s:what = input("What to replace: ")
 		let s:word = input("Replace `". s:what . "` with: ")
-		:exe '%s/\<' . s:what . '\>/' . s:word . '/gce'
+		:exe s:com . 's/\<' . s:what . '\>/' . s:word . '/gce'
 		:unlet! s:word
 	endif
 endfunction
@@ -634,8 +645,24 @@ function! SetCursorPosition()
 		endif
 	end
 endfunction
+
+" http://stackoverflow.com/questions/6552295/deleting-all-empty-buffers-in-vim
+function! DeleteEmptyBuffers()
+    let empty = []
+    let [i, n] = [1, bufnr('$')]
+    while i <= n
+        if bufexists(i) && bufname(i) == ''
+            call add(empty, i)
+        endif
+        let i += 1
+    endwhile
+    if len(empty) > 0
+        exe 'bdelete' join(empty, ' ')
+    endif
+endfunction
+
 " ==============================================================================
-" "Fix"                     Способы устранения непоняток с настройками {{{1
+" "Fix"                     {{{1
 "
 " Узнать из какого файла переменная была установлена посл. раз
 "   :verbose set переменная
@@ -655,7 +682,7 @@ endfunction
 " Записать все сообщения в файл
 "   :set verbosefile=<FILE>
 " ==============================================================================
-" "Plugins"                 Plugins {{{1
+" "Plugins"                 {{{1
 " ==============================================================================
 " "Plugin.CtrlP" {{{2
 " ==============================================================================
@@ -791,6 +818,7 @@ let g:Powerline_cache_enabled = 1
 let g:miniBufExplTabWrap = 1 " make tabs show complete (no broken on two lines)
 let g:miniBufExplUseSingleClick = 1 " If you would like to single click on tabs rather than double clicking on them to goto the selected buffer.
 let g:miniBufExplMaxSize = 1 " <max lines: defualt 0> setting this to 0 will mean the window gets as big as needed to fit all your buffers.
+" =============================================================================
 "}}} {{{1
-" vim: foldenable fdm=marker fdc=2 foldlevelstart=0 sts=4 sw=4 tw=64 fileencoding=utf-8
+" vim: foldenable fdm=marker fdc=0 foldlevelstart=0 sts=4 sw=4 tw=64 fileencoding=utf-8
 " }}}
