@@ -8,7 +8,7 @@ if !isdirectory(expand($HOME . "/.vim/bundle/vundle/.git"))
 	system("git clone git://github.com/gmarik/vundle.git " . $HOME/bundle/vundle)
 endif
 
-" Need to review
+" Need to review {{{1
 " ==============================================================================
 " ShowMarks {
 		" let showmarks_include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -24,48 +24,6 @@ endif
 		" highlight ShowMarksHLm gui=bold guibg=LightGreen guifg=DarkGreen
 	" }
 
-" ==================================================
-" Filetypes
-" ==================================================
-" javascript folding
-function! JavaScriptFold()
-    setl foldmethod=syntax
-    setl foldlevelstart=1
-    syn region foldBraces start=/{/ end=/}/ transparent fold keepend extend
-
-    function! FoldText()
-        return substitute(getline(v:foldstart), '{.*', '{...}', '')
-    endfunction
-    setl foldtext=FoldText()
-endfunction
-
-" ==================================================
-" Javascript
-" ==================================================
-au FileType javascript call JavaScriptFold()
-au FileType javascript setl fen
-au FileType javascript set errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
-au FileType javascript set makeprg=jshint\ %
-autocmd FileType javascript map <buffer> <leader>M :SyntasticCheck<CR>
-au FileType javascript set tags=tags-js;/
-
-autocmd BufRead,BufNewFile *.json set filetype=json
-command Js silent %!jp
-command Jc silent %!jcompress
-autocmd FileType json Js
-
-" utl.vim
-" https://github.com/skwp/dotfiles
-
-
-let g:syntastic_check_on_open=1
-let g:syntastic_enable_signs=0
-let g:syntastic_enable_highlighting=1
-let g:syntastic_auto_loc_list=1
-let g:syntastic_loc_list_height=5
-
-let g:syntastic_python_checker = 'flake8'
-let g:syntastic_javascript_checker = 'jslint'
 " ==============================================================================
 
 filetype off
@@ -191,7 +149,7 @@ set hidden
 
 set autoread            " Включение автоматического перечтения файла при изменении
 if s:iswin
-	set autochdir           " Автоматически устанавливать текущей, директорию отрытого файла
+	"set autochdir           " Автоматически устанавливать текущей, директорию отрытого файла
 endif
 set browsedir=buffer    " Начинать обзор с каталога текущего буфера
 set confirm             " Включение диалогов с запросами
@@ -295,7 +253,7 @@ set virtualedit=onemore
 set scrolloff=999
 
 if s:iswin
-	set gfn=DejaVu_Sans_Mono:h10:,cRUSSIANconsolas:h11,
+	set gfn=cRUSSIANconsolas:h11:,DejaVu_Sans_Mono:h10
 elseif has("gui_gtk2")
 	set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
 endif
@@ -312,7 +270,7 @@ endtry
 
 if s:iswin
 	" Установка высоты и ширины окна
-	winsize 90 30
+	winsize 150 800
 endif
 
 set guioptions=
@@ -526,14 +484,19 @@ nmap <S-Tab> :bp<cr>
 nmap <Tab> :bn<cr>
 
 " Wipeout buffer but save split
-"nmap <Leader>qq <Plug>Kwbd
-nmap <Leader>qq :BW<CR>
+nmap <Leader>qq :call SmartClose()<CR>
 
 " Wipeout buffer and close split
-nmap <Leader>qw :bw<CR>
+nmap <Leader>qb :bw<CR>
 
 " Close split
-nmap <Leader>qs <C-W>c
+nmap <Leader>qw <C-W>c
+
+" Close all
+nmap <Leader>qa :qa<CR>
+
+" Save all changed buffers and close VIM
+nmap <Leader>qx :xa<CR>
 
 " "FORMATING" {{{2
 " Reformat whole file
@@ -614,8 +577,8 @@ let g:yankring_history_dir = $TEMP
 let s:cmdline = ""
 
 function! ToggleGUINoise()
-	if &go=='c'
-		exec('se go=mL')
+	if &go=='mc'
+		exec('se go=mc')
 		exec('se go-=b')
 		echo "Show GUI elements"
 	else
@@ -701,6 +664,64 @@ function! DeleteEmptyBuffers()
     if len(empty) > 0
         exe 'bdelete' join(empty, ' ')
     endif
+endfunction
+
+function! CountListedBuffers() 
+  let cnt = 0 
+  for nr in range(1,bufnr("$")) 
+	if buflisted(nr) 
+	  let cnt += 1 
+	endif 
+  endfor 
+  return cnt 
+endfunction 
+
+function! SmartClose()
+	let s:BufferToKill = bufnr('%')
+	let s:EmptyBuffer = 0
+
+	if bufname('%') == '' && ! &modified && &modifiable
+		if &buftype == 'nofile' && &swapfile == 0
+			" Is scratch buffer, not empty
+		else
+			let s:EmptyBuffer = 1
+		endif
+	endif
+
+	" Get a list of all windows which have this buffer loaded
+	let s:WindowListWithBufferLoaded = []
+	let i = 1
+	let buf = winbufnr(i)
+	while buf != -1
+		if buf == s:BufferToKill
+			let s:WindowListWithBufferLoaded += [i]
+		endif
+		let i = i + 1
+		let buf = winbufnr(i)
+	endwhile
+
+	" Check that the buffer is last
+	if(CountListedBuffers() < 2)
+		let s:LastBuffer = 1
+	else
+		let s:LastBuffer = 0
+	endif
+
+	if s:LastBuffer
+		if len(s:WindowListWithBufferLoaded) > 1
+			execute "close"
+		else
+			if ! s:EmptyBuffer
+				execute "bw"
+			else
+				execute "q"
+			endif
+		endif
+	else
+		let g:BufKillActionWhenBufferDisplayedInAnotherWindow="kill"
+		execute "BW"
+		let g:BufKillActionWhenBufferDisplayedInAnotherWindow="confirm"
+	endif
 endfunction
 
 " ==============================================================================
@@ -860,7 +881,6 @@ let g:Powerline_cache_enabled = 1
 let g:miniBufExplTabWrap = 1 " make tabs show complete (no broken on two lines)
 let g:miniBufExplUseSingleClick = 1 " If you would like to single click on tabs rather than double clicking on them to goto the selected buffer.
 let g:miniBufExplMaxSize = 1 " <max lines: defualt 0> setting this to 0 will mean the window gets as big as needed to fit all your buffers.
-
 " MiniBufExpl Colors
 hi MBEVisibleActive guifg=#A6DB29 guibg=fg
 hi MBEVisibleChangedActive guifg=#F1266F guibg=fg
@@ -868,6 +888,7 @@ hi MBEVisibleChanged guifg=#F1266F guibg=fg cterm=bold gui=bold
 hi MBEVisibleNormal guifg=#5DC2D6 guibg=fg cterm=bold gui=bold
 hi MBEChanged guifg=#CD5907 guibg=fg cterm=italic gui=italic
 hi MBENormal guifg=#808080 guibg=fg cterm=italic gui=italic
+
 
 " =============================================================================
 "}}} {{{1
