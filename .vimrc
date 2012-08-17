@@ -4,11 +4,8 @@
 " ==============================================================================
 " "Bundles"                 {{{1
 " ==============================================================================
-if !isdirectory(expand($HOME . "/.vim/bundle/vundle/.git"))
-	system("git clone git://github.com/gmarik/vundle.git " . $HOME/bundle/vundle)
-endif
 
-" Need to review {{{1
+" Need to review {{{2
 " ==============================================================================
 " ShowMarks {
 		" let showmarks_include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -25,6 +22,7 @@ endif
 	" }
 
 " ==============================================================================
+" }}}
 
 filetype off
 
@@ -79,6 +77,8 @@ Bundle "git://github.com/tpope/vim-repeat.git"
 " Colorschemes
 Bundle "git://github.com/sjl/badwolf.git"
 Bundle 'git://github.com/altercation/vim-colors-solarized.git'
+" Nice light scheme
+Bundle "git://github.com/vim-scripts/TuttiColori-Colorscheme.git"
 
 
 filetype plugin indent on
@@ -286,6 +286,8 @@ set nolist          " Не подсвечивать некоторые симв�
 
 " Replace fold's hyphen with dot
 set fillchars=fold:\·
+set fillchars+=vert:\|
+hi VertSplit fg=white
 
 " Установка символов для подсветки
 if has('multi_byte')
