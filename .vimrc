@@ -287,7 +287,7 @@ set nolist          " Не подсвечивать некоторые симв�
 " Replace fold's hyphen with dot
 set fillchars=fold:\·
 set fillchars+=vert:\|
-hi VertSplit fg=white
+" hi VertSplit fg=white
 
 " Установка символов для подсветки
 if has('multi_byte')
