@@ -24,6 +24,48 @@ endif
 		" highlight ShowMarksHLm gui=bold guibg=LightGreen guifg=DarkGreen
 	" }
 
+" ==================================================
+" Filetypes
+" ==================================================
+" javascript folding
+function! JavaScriptFold()
+    setl foldmethod=syntax
+    setl foldlevelstart=1
+    syn region foldBraces start=/{/ end=/}/ transparent fold keepend extend
+
+    function! FoldText()
+        return substitute(getline(v:foldstart), '{.*', '{...}', '')
+    endfunction
+    setl foldtext=FoldText()
+endfunction
+
+" ==================================================
+" Javascript
+" ==================================================
+au FileType javascript call JavaScriptFold()
+au FileType javascript setl fen
+au FileType javascript set errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
+au FileType javascript set makeprg=jshint\ %
+autocmd FileType javascript map <buffer> <leader>M :SyntasticCheck<CR>
+au FileType javascript set tags=tags-js;/
+
+autocmd BufRead,BufNewFile *.json set filetype=json
+command Js silent %!jp
+command Jc silent %!jcompress
+autocmd FileType json Js
+
+" utl.vim
+" https://github.com/skwp/dotfiles
+
+
+let g:syntastic_check_on_open=1
+let g:syntastic_enable_signs=0
+let g:syntastic_enable_highlighting=1
+let g:syntastic_auto_loc_list=1
+let g:syntastic_loc_list_height=5
+
+let g:syntastic_python_checker = 'flake8'
+let g:syntastic_javascript_checker = 'jslint'
 " ==============================================================================
 
 filetype off
@@ -818,6 +860,15 @@ let g:Powerline_cache_enabled = 1
 let g:miniBufExplTabWrap = 1 " make tabs show complete (no broken on two lines)
 let g:miniBufExplUseSingleClick = 1 " If you would like to single click on tabs rather than double clicking on them to goto the selected buffer.
 let g:miniBufExplMaxSize = 1 " <max lines: defualt 0> setting this to 0 will mean the window gets as big as needed to fit all your buffers.
+
+" MiniBufExpl Colors
+hi MBEVisibleActive guifg=#A6DB29 guibg=fg
+hi MBEVisibleChangedActive guifg=#F1266F guibg=fg
+hi MBEVisibleChanged guifg=#F1266F guibg=fg cterm=bold gui=bold
+hi MBEVisibleNormal guifg=#5DC2D6 guibg=fg cterm=bold gui=bold
+hi MBEChanged guifg=#CD5907 guibg=fg cterm=italic gui=italic
+hi MBENormal guifg=#808080 guibg=fg cterm=italic gui=italic
+
 " =============================================================================
 "}}} {{{1
 " vim: foldenable fdm=marker fdc=0 foldlevelstart=0 sts=4 sw=4 tw=64 fileencoding=utf-8
