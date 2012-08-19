@@ -20,7 +20,10 @@
 		" For multiple marks on the same line.
 		" highlight ShowMarksHLm gui=bold guibg=LightGreen guifg=DarkGreen
 	" }
-
+" Vim from Ubuntu ppa: http://askubuntu.com/questions/7283/where-can-i-find-vim-7-3
+" VimOrganizer
+"au! BufRead,BufWrite,BufWritePost,BufNewFile *.org
+"au BufEnter *.org call org#SetOrgFileType()
 " ==============================================================================
 " }}}
 
@@ -78,7 +81,7 @@ Bundle "git://github.com/tpope/vim-repeat.git"
 Bundle "git://github.com/sjl/badwolf.git"
 Bundle 'git://github.com/altercation/vim-colors-solarized.git'
 " Nice light scheme
-Bundle "git://github.com/vim-scripts/TuttiColori-Colorscheme.git"
+" Tutti color theme https://github.com/satyajitranjeev/Dotvim
 
 
 filetype plugin indent on
@@ -194,7 +197,6 @@ endif
 
 " русская раскладка клавиатуры
 "set langmap=ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
-
 " ==============================================================================
 " "Files"                   {{{1
 " ==============================================================================
@@ -214,19 +216,20 @@ set fileformats=unix,dos,mac " Порядок определения форма�
 " История команд
 set history=1000
 
-command! W exec 'w !sudo tee % > /dev/null' | e! " save file with root permissions
+" Sudo to write
+cnoremap w!! w !sudo tee % >/dev/null
 
 " Максимальное количество изменений, которые могут быть отменены
 set undolevels=5000
 
+set backup
+set noswapfile
 " Настройки отмены изменений
 if v:version >= 703
 	set undodir=$TEMP/undo
 	set undofile
 endif
 
-set noswapfile
-set backup
 set backupdir=$TEMP/bac//,/tmp
 " ==============================================================================
 " "GUI"                     {{{1
@@ -260,10 +263,10 @@ endif
 
 set background=dark
 try
-	"let g:solarized_termcolors=256
-	"colorscheme solarized
+	let g:solarized_termcolors=256
+	colorscheme solarized
 	"colorscheme badwolf
-	colorscheme mustang
+	"colorscheme mustang
 catch /^Vim\%((\a\+)\)\=:E185/
 	colorscheme desert
 endtry
@@ -285,9 +288,8 @@ set showmatch       " Довсвечивать совпадающую скобк
 set nolist          " Не подсвечивать некоторые символы
 
 " Replace fold's hyphen with dot
-set fillchars=fold:\·
+set fillchars=fold:\ 
 set fillchars+=vert:\|
-" hi VertSplit fg=white
 
 " Установка символов для подсветки
 if has('multi_byte')
@@ -350,7 +352,7 @@ if s:us_folding
 	"   marker  Складки задаются с использованием маркеров.
 	"   syntax  Складки задаются в соответствии с правилами подсветки синтаксиса.
 	"   diff    В складки помещаются неизменённые фрагменты текста
-	set foldmethod=indent
+	set foldmethod=syntax
 
 	" Опция назначает максимальное количество вложений складок для методов
 	" "indent" и "syntax". Опция позволяет избежать создания слишком
@@ -359,20 +361,8 @@ if s:us_folding
 	" складках соответствует 20
 	set foldnestmax=3
     set fdc=0
-
-	"nmap <Leader>ff :call <SID>ToggleFold()<CR>
-	"function! s:ToggleFold()
-	"    if &foldmethod == 'marker'
-	"        let &l:foldmethod = 'syntax'
-	"    else
-	"        let &l:foldmethod = 'marker'
-	"    endif
-	"    echo 'foldmethod is now ' . &l:foldmethod
-	"endfunction
-
 else
 	set nofoldenable
-	set foldmethod=manual
 endif
 " ==============================================================================
 " "Sessions"                {{{1
@@ -386,9 +376,14 @@ set sessionoptions+=unix,slash
 " ==============================================================================
 command! -nargs=* Wrap set wrap linebreak nolist | set showbreak=↳  
 if s:us_linewrap
+
+	" Hard line wrap
+	set textwidth=80
+	set formatoptions=
+	set formatoptions=rcqln " auto-wrap comments
+	
 	" Soft line wrap
 	execute "Wrap"
-	set wrap
 else
 	" Запретить перенос строк
 	set nowrap
@@ -399,10 +394,6 @@ endif
 let mapleader=","
 
 " "MISC"	{{{2
-noremap j gj
-noremap k gk
-noremap gj j
-noremap gk k
 
 " System clipboard interaction.  Mostly from:
 " https://github.com/henrik/dotfiles/blob/master/vim/config/mappings.vim
@@ -410,6 +401,9 @@ noremap <leader>y "*y
 noremap <leader>p :set paste<CR>"*p<CR>:set nopaste<CR>
 noremap <leader>P :set paste<CR>"*P<CR>:set nopaste<CR>
 vnoremap <leader>y "*ygv
+
+" Insert the directory of the current buffer in command line mode
+cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 nnoremap ; :
 
@@ -419,27 +413,6 @@ vnoremap > >gv
 
 inoremap jj <Esc>
 
-" Disable arrow keys
-inoremap <Up> <NOP>
-inoremap <Down> <NOP>
-inoremap <Left> <NOP>
-inoremap <Right> <NOP>
-
-" Page down with <Space>
-nmap <Space> <PageDown>
-
-" Move in insert mode with Ctrl+h,j,k,l
-imap <C-h> <C-o>h
-imap <C-j> <C-o>j
-imap <C-k> <C-o>k
-imap <C-l> <C-o>l
-
-" Move in command line with Ctrl+h,j,k,l
-cmap <C-h> <Left>
-cmap <C-j> <Down>
-cmap <C-k> <Up>
-cmap <C-l> <Right>
-
 " Show hidden chars
 nmap <Leader>i :call ToggleListChars()<cr>
 
@@ -447,13 +420,11 @@ nmap <Leader>i :call ToggleListChars()<cr>
 map <C-s> <esc>:w<CR>
 imap <C-s> <C-o>:w<CR>
 
-" Edit another file in the same directory as the current file
-" uses expression to extract path from current file's path
-map <Leader>n :vnew <C-R>=expand("%:p:h") . '/'<CR>
-
 " ,g Toggle GUI Noise
 map <Leader>gg <Esc>:call ToggleGUINoise()<cr>
 map <Leader>gd <Esc>:call ToggleDistractionFree()<cr>
+map <Leader>gf :call <SID>ToggleFold()<CR>
+map <Leader>gw :set invwrap<CR>
 
 " Show unsaved changes
 " http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file
@@ -480,13 +451,13 @@ noremap <Leader>= <C-W>=
 
 " ,bl show buffers
 nmap <Leader>bl :ls<cr>:b
-nmap <Leader>bp :bp<cr>
-nmap <Leader>bn :bn<cr>
+nmap <Leader>h :bp<cr>
+nmap <Leader>l :bn<cr>
 nmap <S-Tab> :bp<cr>
 nmap <Tab> :bn<cr>
 
 " Wipeout buffer but save split
-nmap <Leader>qq :call SmartClose()<CR>
+nmap <Leader>qq :call SmartExit()<CR>
 
 " Wipeout buffer and close split
 nmap <Leader>qb :bw<CR>
@@ -510,6 +481,35 @@ nmap <Leader>f<Space> :%s/\s\+$//<cr>''
 " Yank to the end of the line
 nnoremap Y y$
 
+" "NAVIGATION" {{{2
+noremap H ^
+noremap L $
+
+noremap j gj
+noremap k gk
+noremap gj j
+noremap gk k
+
+" Disable arrow keys
+inoremap <Up> <NOP>
+inoremap <Down> <NOP>
+inoremap <Left> <NOP>
+inoremap <Right> <NOP>
+
+" Page down with <Space>
+nmap <Space> <PageDown>
+
+" Move in insert mode with Ctrl+h,j,k,l
+imap <C-h> <C-o>h
+imap <C-j> <C-o>j
+imap <C-k> <C-o>k
+imap <C-l> <C-o>l
+
+" Move in command line with Ctrl+h,j,k,l
+cmap <C-h> <Left>
+cmap <C-j> <Down>
+cmap <C-k> <Up>
+cmap <C-l> <Right>
 " "FIND AND REPLACE IN FILE" {{{2
 " Replace the word under cursor
 nnoremap <Leader>rr :call Replace(1, 0)<CR>
@@ -531,15 +531,18 @@ nmap g# g#zz
 nmap * *zz
 nmap # #zz
 
-" "EDIT THING"	{{{2
+" "QUICK EDITING"	{{{2
 " ,ev open _vimrc in new tab
 nmap <leader>ev :e $MYVIMRC<CR>
 "
 " ,ei open _vimrc in new tab
 nmap <leader>ei :e .gitignore<CR>
 
-" Scratch buffer
+" ,es Scratch buffer
 nmap <leader>es :Sscratch<cr>
+
+" New blank buffer
+map <Leader>n :enew<CR>
 
 " "SESSIONS"	{{{2
 nmap <Leader>sl :SessionList<cr>
@@ -578,8 +581,19 @@ let g:yankring_history_dir = $TEMP
 " ==============================================================================
 let s:cmdline = ""
 
+function! s:ToggleFold()
+	if &foldmethod == 'marker'
+		let &l:foldmethod = 'indent'
+	elseif &foldmethod == 'indent'
+		let &l:foldmethod = 'syntax'
+	else
+		let &l:foldmethod = 'marker'
+	endif
+	echo 'foldmethod is now ' . &l:foldmethod
+endfunction
+
 function! ToggleGUINoise()
-	if &go=='mc'
+	if &go=='c'
 		exec('se go=mc')
 		exec('se go-=b')
 		echo "Show GUI elements"
@@ -678,7 +692,7 @@ function! CountListedBuffers()
   return cnt 
 endfunction 
 
-function! SmartClose()
+function! SmartExit()
 	let s:BufferToKill = bufnr('%')
 	let s:EmptyBuffer = 0
 
@@ -714,7 +728,7 @@ function! SmartClose()
 			execute "close"
 		else
 			if ! s:EmptyBuffer
-				execute "bw"
+				execute "bw | bw"
 			else
 				execute "q"
 			endif
@@ -726,6 +740,79 @@ function! SmartClose()
 	endif
 endfunction
 
+" ==============================================================================
+" "Filetype-specific"               {{{1
+" ==============================================================================
+" Javascript {{{2
+
+augroup ft_javascript
+    au!
+
+    au FileType javascript setlocal foldmethod=marker
+    au FileType javascript setlocal foldmarker={,}
+
+    " Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
+    " positioned inside of them AND the following code doesn't get unfolded.
+    au Filetype javascript inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
+augroup END
+
+" }}}
+" CoffeeScript {{{2
+
+augroup ft_javascript
+    au!
+
+    au FileType javascript setlocal foldmethod=indent
+augroup END
+
+" }}}
+" CSS and LessCSS {{{2
+
+augroup ft_css
+    au!
+
+    au BufNewFile,BufRead *.less setlocal filetype=less
+
+    au Filetype less,css setlocal foldmethod=marker
+    au Filetype less,css setlocal foldmarker={,}
+    au Filetype less,css setlocal omnifunc=csscomplete#CompleteCSS
+    au Filetype less,css setlocal iskeyword+=-
+
+    au BufNewFile,BufRead *.less,*.css nnoremap <buffer> <localleader>S ?{<CR>jV/\v^\s*\}?$<CR>k:sort<CR>:noh<CR>
+
+    " Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
+    " positioned inside of them AND the following code doesn't get unfolded.
+    au BufNewFile,BufRead *.less,*.css inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
+augroup END
+" C {{{2
+
+augroup ft_c
+    au!
+    au FileType c setlocal foldmethod=syntax
+augroup END
+
+" }}}
+" Python {{{2
+
+augroup ft_python
+    au!
+
+    " au FileType python setlocal omnifunc=pythoncomplete#Complete
+    au FileType python setlocal define=^\s*\\(def\\\\|class\\)
+    au FileType python compiler nose
+    au FileType man nnoremap <buffer> <cr> :q<cr>
+
+    " Jesus tapdancing Christ, built-in Python syntax, you couldn't let me
+    " override this in a normal way, could you?
+    au FileType python if exists("python_space_error_highlight") | unlet python_space_error_highlight | endif
+
+    " Jesus, Python.  Five characters of punctuation for a damn string?
+    au FileType python inoremap <buffer> <c-g> _(u'')<left><left>
+
+    au FileType python inoremap <buffer> <c-b> """"""<left><left><left>
+augroup END
+
+" }}}
 " ==============================================================================
 " "Fix"                     {{{1
 "
@@ -757,13 +844,21 @@ nmap <C-e> :CtrlPMRU<cr>
 imap <C-e> <esc>:CtrlPMRU<cr>
 
 " Список файлов в текущей директории (plugin-CtrlP)
-nmap <C-f> :CtrlP<cr>
-imap <C-f> <esc>:CtrlP<cr>
+imap <C-p> <esc>:CtrlP<cr>
+" Don't now what is this, need to investigate
+" let g:ctrlp_dont_split = 'NERD_tree_2'
+" let g:ctrlp_jump_to_buffer = 0
+" let g:ctrlp_map = '<leader>,'
+" let g:ctrlp_working_path_mode = 0
+" let g:ctrlp_match_window_reversed = 1
+" let g:ctrlp_split_window = 0
+" let g:ctrlp_max_height = 20
+" let g:ctrlp_extensions = ['tag']
 " ==============================================================================
 " "Plugin.delimitMate" {{{2
 " ==============================================================================
-let loaded_delimitMate = 0 " 1 - will disable delimitMate
-let delimitMate_expand_cr = 1 "Expand <CR>
+let g:loaded_delimitMate = 0 " 1 - will disable delimitMate
+let g:delimitMate_expand_cr = 1 "Expand <CR>
 " ==============================================================================
 " "Plugin.FencView" {{{2
 " ==============================================================================
@@ -772,34 +867,41 @@ let g:fencview_autodetect=0
 " ==============================================================================
 " "Plugin.neocomplcache" {{{2
 " ==============================================================================
-" Переключение всплывающего меню neocomplcache
-" (plugin-neocomplcache)
-"nmenu PopUp.Toggle\ Neo\ PopUp\ menu :NeoComplCacheToggle<cr>
-"imenu PopUp.Toggle\ Neo\ PopUp\ menu <esc>:NeoComplCacheToggle<cr>i
+imap  <silent><expr><tab>  neocomplcache#sources#snippets_complete#expandable() ? "\<plug>(neocomplcache_snippets_expand)" : (pumvisible() ? "\<c-n>" : "\<tab>")
+smap  <tab>  <right><plug>(neocomplcache_snippets_jump) 
+inoremap <expr><c-e>     neocomplcache#complete_common_string()
 
-" CTRL+Space для автозавершения (plugin-neocomplcache)
+"" CTRL+Space для автозавершения (plugin-neocomplcache)
 imap <C-Space> <C-X><C-U>
 if !has("gui_running")
 	inoremap <C-@> <C-X><C-U>
 endif
 
 " <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
 " Раскрыть сниппет/переход по сниппету (plugin-neocomplcache)
-imap <silent><C-j> <Plug>(neocomplcache_snippets_expand)
-smap <silent><C-j> <Plug>(neocomplcache_snippets_expand)
+"imap <silent><C-j> <Plug>(neocomplcache_snippets_expand)
+"smap <silent><C-j> <Plug>(neocomplcache_snippets_expand)
 
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_min_syntax_length = 3
 let g:neocomplcache_enable_ignore_case = 0
+" Use smartcase. 
+let g:neocompe_enable_camel_case_completion = 1
+" Use camel case completion. 
+let g:neocomplcachlcache_enable_smart_case = 1 
+" Use underbar completion. 
+let g:neocomplcache_enable_underbar_completion = 1  
+" AutoComplPop like behavior. 
+let g:neocomplcache_enable_auto_select = 1 
 
 " Если не выставить эту опцию то вырезание а затем вставка (в insert mode)
 " через виндовые хоткеи страшно глючит
-let g:neocomplcache_disable_select_mode_mappings = 1
+"let g:neocomplcache_disable_select_mode_mappings = 1
 
 " Включение/отключение автоматики Активация по Ctrl+Space
-let g:neocomplcache_disable_auto_complete = 1
+"let g:neocomplcache_disable_auto_complete = 1
 " ==============================================================================
 " "Plugin.NERDTree" {{{2
 " ==============================================================================
@@ -883,6 +985,9 @@ let g:Powerline_cache_enabled = 1
 let g:miniBufExplTabWrap = 1 " make tabs show complete (no broken on two lines)
 let g:miniBufExplUseSingleClick = 1 " If you would like to single click on tabs rather than double clicking on them to goto the selected buffer.
 let g:miniBufExplMaxSize = 1 " <max lines: defualt 0> setting this to 0 will mean the window gets as big as needed to fit all your buffers.
+"let g:miniBufExplorerMoreThanOne = 0
+"let g:miniBufExplModSelTarget = 1
+
 " MiniBufExpl Colors
 hi MBEVisibleActive guifg=#A6DB29 guibg=fg
 hi MBEVisibleChangedActive guifg=#F1266F guibg=fg
