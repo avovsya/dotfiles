@@ -40,22 +40,16 @@ Bundle 'git://github.com/scrooloose/nerdtree.git'
 Bundle "git://github.com/vim-scripts/matchit.zip.git"
 Bundle "git://github.com/vim-scripts/sessionman.vim.git"
 Bundle "git://github.com/Shougo/neocomplcache.git"
-Bundle "git://github.com/Shougo/neocomplcache-snippets-complete"
 Bundle "git://github.com/tpope/vim-fugitive.git"
 Bundle "git://github.com/gregsexton/gitv.git"
 Bundle "git://github.com/xolox/vim-easytags.git"
 Bundle "git://github.com/vim-scripts/Open-associated-programs.git"
 Bundle "git://github.com/Raimondi/delimitMate.git"
-Bundle "git://github.com/vim-scripts/jsflakes.vim.git"
-Bundle "git://github.com/michalliu/jsruntime.vim.git"
-Bundle "git://github.com/michalliu/jsoncodecs.vim.git"
 Bundle "git://github.com/majutsushi/tagbar.git"
 Bundle "git://github.com/thinca/vim-template.git"
 Bundle "git://github.com/scrooloose/syntastic.git"
 Bundle "git://github.com/kien/ctrlp.vim.git"
-Bundle "git://github.com/kchmck/vim-coffee-script.git"
 Bundle "git://github.com/rom399/vim-colors.git"
-Bundle "git://github.com/digitaltoad/vim-jade.git"
 Bundle "git://github.com/skammer/vim-css-color.git"
 Bundle 'git://github.com/vim-scripts/IndexedSearch.git'
 Bundle "git://github.com/vim-scripts/vimwiki.git"
@@ -63,11 +57,26 @@ Bundle "git://github.com/tpope/vim-surround.git"
 Bundle "git://github.com/Lokaltog/vim-powerline.git"
 Bundle "git://github.com/fholgado/minibufexpl.vim.git"
 
+" Syntax and filetype plugins
+Bundle "git://github.com/digitaltoad/vim-jade.git"
+Bundle "git://github.com/kchmck/vim-coffee-script.git"
+Bundle "git://github.com/zaiste/tmux.vim.git"
+" JS
+Bundle "git://github.com/vim-scripts/jsflakes.vim.git"
+Bundle "git://github.com/michalliu/jsruntime.vim.git"
+Bundle "git://github.com/michalliu/jsoncodecs.vim.git"
+
 " Тестируемые
 Bundle "git://github.com/vim-scripts/EasyGrep.git"
 Bundle "git://github.com/godlygeek/tabular.git"
+Bundle "git://github.com/vim-scripts/UltiSnips.git"
+Bundle "git://github.com/spiiph/vim-space.git"
+" Zoom one window and then restore others
+Bundle "git://github.com/vim-scripts/ZoomWin.git"
+" Text object that manipulates indentation, e.g. vai / vii = select indent block
+" including / excluding the outer lines. For python, coffee, jade etc
+Bundle "git://github.com/austintaylor/vim-indentobject.git"
 
-Bundle "git://github.com/zaiste/tmux.vim.git"
 Bundle "git://github.com/benmills/vimux.git"
 
 Bundle "git://github.com/vim-scripts/YankRing.vim.git"
@@ -76,6 +85,12 @@ Bundle "git://github.com/vim-scripts/diffchanges.vim.git"
 Bundle "git://github.com/vim-scripts/scratch.vim.git"
 Bundle "git://github.com/vim-scripts/bufkill.vim.git"
 Bundle "git://github.com/tpope/vim-repeat.git"
+
+" Org mode
+Bundle "git://github.com/vim-scripts/calendar.vim--Matsumoto.git"
+Bundle "git://github.com/chrisbra/NrrwRgn.git"
+Bundle "git://github.com/vim-scripts/utl.vim.git"
+Bundle "git://github.com/hsitz/VimOrganizer.git"
 
 " Colorschemes
 Bundle "git://github.com/sjl/badwolf.git"
@@ -151,9 +166,7 @@ set whichwrap+=[,]
 set hidden
 
 set autoread            " Включение автоматического перечтения файла при изменении
-if s:iswin
-	"set autochdir           " Автоматически устанавливать текущей, директорию отрытого файла
-endif
+"set autochdir           " Автоматически устанавливать текущей, директорию отрытого файла
 set browsedir=buffer    " Начинать обзор с каталога текущего буфера
 set confirm             " Включение диалогов с запросами
 
@@ -256,7 +269,7 @@ set virtualedit=onemore
 set scrolloff=999
 
 if s:iswin
-	set gfn=cRUSSIANconsolas:h11:,DejaVu_Sans_Mono:h10
+	set gfn=DejaVu_Sans_Mono:h10:,consolas:h11
 elseif has("gui_gtk2")
 	set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
 endif
@@ -264,17 +277,17 @@ endif
 set background=dark
 try
 	let g:solarized_termcolors=256
-	colorscheme solarized
-	"colorscheme badwolf
+	"colorscheme solarized
+	colorscheme badwolf
 	"colorscheme mustang
 catch /^Vim\%((\a\+)\)\=:E185/
 	colorscheme desert
 endtry
 
-if s:iswin
-	" Установка высоты и ширины окна
-	winsize 150 800
-endif
+"if s:iswin
+	"" Установка высоты и ширины окна
+	"winsize 150 800
+"endif
 
 set guioptions=
 set guioptions+=c   " Отключение графических диалогов
@@ -352,7 +365,7 @@ if s:us_folding
 	"   marker  Складки задаются с использованием маркеров.
 	"   syntax  Складки задаются в соответствии с правилами подсветки синтаксиса.
 	"   diff    В складки помещаются неизменённые фрагменты текста
-	set foldmethod=syntax
+	set foldmethod=indent
 
 	" Опция назначает максимальное количество вложений складок для методов
 	" "indent" и "syntax". Опция позволяет избежать создания слишком
@@ -398,9 +411,13 @@ let mapleader=","
 " System clipboard interaction.  Mostly from:
 " https://github.com/henrik/dotfiles/blob/master/vim/config/mappings.vim
 noremap <leader>y "*y
+noremap <leader>Y "*y$
 noremap <leader>p :set paste<CR>"*p<CR>:set nopaste<CR>
 noremap <leader>P :set paste<CR>"*P<CR>:set nopaste<CR>
 vnoremap <leader>y "*ygv
+
+" Visually select the text that was last edited/pasted
+nmap gV `[v`]
 
 " Insert the directory of the current buffer in command line mode
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
@@ -411,7 +428,8 @@ nnoremap ; :
 vnoremap < <gv
 vnoremap > >gv
 
-inoremap jj <Esc>
+"inoremap jj <Esc>
+inoremap jk <Esc>
 
 " Show hidden chars
 nmap <Leader>i :call ToggleListChars()<cr>
@@ -453,8 +471,8 @@ noremap <Leader>= <C-W>=
 nmap <Leader>bl :ls<cr>:b
 nmap <Leader>h :bp<cr>
 nmap <Leader>l :bn<cr>
-nmap <S-Tab> :bp<cr>
-nmap <Tab> :bn<cr>
+"nmap <S-Tab> :bp<cr>
+"nmap <Tab> :bn<cr>
 
 " Wipeout buffer but save split
 nmap <Leader>qq :call SmartExit()<CR>
@@ -521,7 +539,7 @@ nnoremap <Leader>rs :call Replace(0, 0)<CR>
 vnoremap <Leader>r :call Replace(0, 1)<CR>
 
 " <Esc><Esc>  Clear the search highlight
-nnoremap <silent> <Esc><Esc> :nohlsearch<CR><ESC>
+nnoremap <silent><Leader><Space> :nohlsearch<CR><ESC>
 
 " Centered search results
 nmap n nzz
@@ -844,7 +862,7 @@ nmap <C-e> :CtrlPMRU<cr>
 imap <C-e> <esc>:CtrlPMRU<cr>
 
 " Список файлов в текущей директории (plugin-CtrlP)
-imap <C-p> <esc>:CtrlP<cr>
+"imap <C-p> <esc>:CtrlP<cr>
 " Don't now what is this, need to investigate
 " let g:ctrlp_dont_split = 'NERD_tree_2'
 " let g:ctrlp_jump_to_buffer = 0
@@ -867,41 +885,30 @@ let g:fencview_autodetect=0
 " ==============================================================================
 " "Plugin.neocomplcache" {{{2
 " ==============================================================================
-imap  <silent><expr><tab>  neocomplcache#sources#snippets_complete#expandable() ? "\<plug>(neocomplcache_snippets_expand)" : (pumvisible() ? "\<c-n>" : "\<tab>")
-smap  <tab>  <right><plug>(neocomplcache_snippets_jump) 
-inoremap <expr><c-e>     neocomplcache#complete_common_string()
-
 "" CTRL+Space для автозавершения (plugin-neocomplcache)
-imap <C-Space> <C-X><C-U>
-if !has("gui_running")
-	inoremap <C-@> <C-X><C-U>
-endif
-
-" <TAB>: completion.
-"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-" Раскрыть сниппет/переход по сниппету (plugin-neocomplcache)
-"imap <silent><C-j> <Plug>(neocomplcache_snippets_expand)
-"smap <silent><C-j> <Plug>(neocomplcache_snippets_expand)
-
+"imap <C-Space> <C-X><C-U>
+"if !has("gui_running")
+	"inoremap <C-@> <C-X><C-U>
+"endif
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_min_syntax_length = 3
 let g:neocomplcache_enable_ignore_case = 0
-" Use smartcase. 
 let g:neocompe_enable_camel_case_completion = 1
-" Use camel case completion. 
 let g:neocomplcachlcache_enable_smart_case = 1 
-" Use underbar completion. 
 let g:neocomplcache_enable_underbar_completion = 1  
 " AutoComplPop like behavior. 
-let g:neocomplcache_enable_auto_select = 1 
+"let g:neocomplcache_enable_auto_select = 0
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 " Если не выставить эту опцию то вырезание а затем вставка (в insert mode)
 " через виндовые хоткеи страшно глючит
 "let g:neocomplcache_disable_select_mode_mappings = 1
-
-" Включение/отключение автоматики Активация по Ctrl+Space
-"let g:neocomplcache_disable_auto_complete = 1
 " ==============================================================================
 " "Plugin.NERDTree" {{{2
 " ==============================================================================
@@ -991,13 +998,21 @@ let g:miniBufExplMaxSize = 1 " <max lines: defualt 0> setting this to 0 will mea
 " MiniBufExpl Colors
 hi MBEVisibleActive guifg=#A6DB29 guibg=fg
 hi MBEVisibleChangedActive guifg=#F1266F guibg=fg
-hi MBEVisibleChanged guifg=#F1266F guibg=fg cterm=bold gui=bold
-hi MBEVisibleNormal guifg=#5DC2D6 guibg=fg cterm=bold gui=bold
+hi MBEVisibleChanged guifg=#F1266F guibg=fg cterm=bold gui=bold cterm=italic gui=italic
+hi MBEVisibleNormal guifg=#5DC2D6 guibg=fg cterm=bold gui=bold cterm=italic gui=italic
 hi MBEChanged guifg=#CD5907 guibg=fg cterm=italic gui=italic
 hi MBENormal guifg=#808080 guibg=fg cterm=italic gui=italic
 
 
 " =============================================================================
+"
+
+" "Plugin.UltiSnips" {{{2
+" ==============================================================================
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+" ==============================================================================
 "}}} {{{1
 " vim: foldenable fdm=marker fdc=0 foldlevelstart=0 sts=4 sw=4 tw=64 fileencoding=utf-8
 " }}}
