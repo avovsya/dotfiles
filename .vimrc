@@ -70,7 +70,6 @@ Bundle "git://github.com/michalliu/jsoncodecs.vim.git"
 Bundle "git://github.com/vim-scripts/EasyGrep.git"
 Bundle "git://github.com/godlygeek/tabular.git"
 Bundle "git://github.com/vim-scripts/UltiSnips.git"
-Bundle "git://github.com/spiiph/vim-space.git"
 " Zoom one window and then restore others
 Bundle "git://github.com/vim-scripts/ZoomWin.git"
 " Text object that manipulates indentation, e.g. vai / vii = select indent block
@@ -478,7 +477,7 @@ nmap <Leader>l :bn<cr>
 nmap <Leader>qq :call SmartExit()<CR>
 
 " Wipeout buffer and close split
-nmap <Leader>qb :bw<CR>
+nnoremap <Leader>bw :bw<CR>
 
 " Close split
 nmap <Leader>qw <C-W>c
@@ -926,7 +925,7 @@ let NERDTreeIgnore = ['\~$', '*.pyc', '*.pyo']
 " let NERDChristmasTree = 0
 "let NERDTreeMinimalUI=1
 
-nmap <Bs> :NERDTreeToggle<CR>
+nnoremap <Bs> :NERDTreeToggle<CR>
 let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
 let NERDTreeQuitOnOpen=1
@@ -1016,3 +1015,4 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 "}}} {{{1
 " vim: foldenable fdm=marker fdc=0 foldlevelstart=0 sts=4 sw=4 tw=64 fileencoding=utf-8
 " }}}
+
