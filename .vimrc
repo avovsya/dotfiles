@@ -421,7 +421,7 @@ nmap gV `[v`]
 " Insert the directory of the current buffer in command line mode
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
-nnoremap ; :
+"nnoremap ; :
 
 " visual shifting (does not exit Visual mode)
 vnoremap < <gv

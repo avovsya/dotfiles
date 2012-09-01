@@ -1,0 +1,11 @@
+[user]
+	name = Artem Vovsya
+	email = Artem.Nomad@gmail.com
+
+[color]
+	branch = auto
+	diff = auto
+	status = auto
+
+[core]
+	editor = vim
