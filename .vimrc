@@ -70,13 +70,9 @@ Bundle "git://github.com/michalliu/jsoncodecs.vim.git"
 Bundle "git://github.com/vim-scripts/EasyGrep.git"
 Bundle "git://github.com/godlygeek/tabular.git"
 Bundle "git://github.com/vim-scripts/UltiSnips.git"
-" Zoom one window and then restore others
-Bundle "git://github.com/vim-scripts/ZoomWin.git"
 " Text object that manipulates indentation, e.g. vai / vii = select indent block
 " including / excluding the outer lines. For python, coffee, jade etc
 Bundle "git://github.com/austintaylor/vim-indentobject.git"
-
-Bundle "git://github.com/benmills/vimux.git"
 
 Bundle "git://github.com/vim-scripts/YankRing.vim.git"
 Bundle "git://github.com/vim-scripts/diffchanges.vim.git"
@@ -84,12 +80,6 @@ Bundle "git://github.com/vim-scripts/diffchanges.vim.git"
 Bundle "git://github.com/vim-scripts/scratch.vim.git"
 Bundle "git://github.com/vim-scripts/bufkill.vim.git"
 Bundle "git://github.com/tpope/vim-repeat.git"
-
-" Org mode
-Bundle "git://github.com/vim-scripts/calendar.vim--Matsumoto.git"
-Bundle "git://github.com/chrisbra/NrrwRgn.git"
-Bundle "git://github.com/vim-scripts/utl.vim.git"
-Bundle "git://github.com/hsitz/VimOrganizer.git"
 
 " Colorschemes
 Bundle "git://github.com/sjl/badwolf.git"
@@ -427,7 +417,6 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 vnoremap < <gv
 vnoremap > >gv
 
-"inoremap jj <Esc>
 inoremap jk <Esc>
 
 " Show hidden chars
@@ -437,7 +426,6 @@ nmap <Leader>i :call ToggleListChars()<cr>
 map <C-s> <esc>:w<CR>
 imap <C-s> <C-o>:w<CR>
 
-" ,g Toggle GUI Noise
 map <Leader>gg <Esc>:call ToggleGUINoise()<cr>
 map <Leader>gd <Esc>:call ToggleDistractionFree()<cr>
 map <Leader>gf :call <SID>ToggleFold()<CR>
@@ -470,8 +458,6 @@ noremap <Leader>= <C-W>=
 nmap <Leader>bl :ls<cr>:b
 nmap <Leader>h :bp<cr>
 nmap <Leader>l :bn<cr>
-"nmap <S-Tab> :bp<cr>
-"nmap <Tab> :bn<cr>
 
 " Wipeout buffer but save split
 nmap <Leader>qq :call SmartExit()<CR>
