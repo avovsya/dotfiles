@@ -24,6 +24,9 @@
 " VimOrganizer
 "au! BufRead,BufWrite,BufWritePost,BufNewFile *.org
 "au BufEnter *.org call org#SetOrgFileType()
+
+"Rainbow Parentheses is a Vim plugin that colorizes parentheses, square brackets, curly brackets and angle brackets according to their nesting.
+"http://www.vim.org/scripts/script.php?script_id=1561
 " ==============================================================================
 " }}}
 
