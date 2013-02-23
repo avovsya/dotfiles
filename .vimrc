@@ -4,31 +4,9 @@
 " ==============================================================================
 " "Bundles"                 {{{1
 " ==============================================================================
-
-" Need to review {{{2
-" ==============================================================================
-" ShowMarks {
-		" let showmarks_include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		" Don't leave on by default, use :ShowMarksOn to enable
-		" let g:showmarks_enable = 0
-		" For marks a-z
-		" highlight ShowMarksHLl gui=bold guibg=LightBlue guifg=Blue
-		" For marks A-Z
-		" highlight ShowMarksHLu gui=bold guibg=LightRed guifg=DarkRed
-		" For all other marks
-		" highlight ShowMarksHLo gui=bold guibg=LightYellow guifg=DarkYellow
-		" For multiple marks on the same line.
-		" highlight ShowMarksHLm gui=bold guibg=LightGreen guifg=DarkGreen
-	" }
-" Vim from Ubuntu ppa: http://askubuntu.com/questions/7283/where-can-i-find-vim-7-3
-" VimOrganizer
-"au! BufRead,BufWrite,BufWritePost,BufNewFile *.org
-"au BufEnter *.org call org#SetOrgFileType()
-
 "Rainbow Parentheses is a Vim plugin that colorizes parentheses, square brackets, curly brackets and angle brackets according to their nesting.
 "http://www.vim.org/scripts/script.php?script_id=1561
 " ==============================================================================
-" }}}
 
 filetype off
 
@@ -36,7 +14,6 @@ set runtimepath+=$HOME/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle "git://github.com/gmarik/vundle.git"
-Bundle "git://github.com/ujihisa/netrw.vim"
 Bundle "git://github.com/tyru/fencview.vim.git"
 Bundle 'git://github.com/scrooloose/nerdcommenter.git'
 Bundle 'git://github.com/scrooloose/nerdtree.git'
@@ -46,33 +23,25 @@ Bundle "git://github.com/Shougo/neocomplcache.git"
 Bundle "git://github.com/tpope/vim-fugitive.git"
 Bundle "git://github.com/gregsexton/gitv.git"
 Bundle "git://github.com/xolox/vim-easytags.git"
-Bundle "git://github.com/vim-scripts/Open-associated-programs.git"
 Bundle "git://github.com/Raimondi/delimitMate.git"
 Bundle "git://github.com/majutsushi/tagbar.git"
-Bundle "git://github.com/thinca/vim-template.git"
 Bundle "git://github.com/scrooloose/syntastic.git"
 Bundle "git://github.com/kien/ctrlp.vim.git"
 Bundle "git://github.com/rom399/vim-colors.git"
 Bundle "git://github.com/skammer/vim-css-color.git"
 Bundle 'git://github.com/vim-scripts/IndexedSearch.git'
-Bundle "git://github.com/vim-scripts/vimwiki.git"
 Bundle "git://github.com/tpope/vim-surround.git"
+Bundle "git://github.com/tpope/vim-repeat.git"
 Bundle "git://github.com/Lokaltog/vim-powerline.git"
 Bundle "git://github.com/fholgado/minibufexpl.vim.git"
 
 " Syntax and filetype plugins
-Bundle "git://github.com/digitaltoad/vim-jade.git"
 Bundle "git://github.com/kchmck/vim-coffee-script.git"
-Bundle "git://github.com/zaiste/tmux.vim.git"
-" JS
-Bundle "git://github.com/vim-scripts/jsflakes.vim.git"
-Bundle "git://github.com/michalliu/jsruntime.vim.git"
-Bundle "git://github.com/michalliu/jsoncodecs.vim.git"
 
 " Тестируемые
 Bundle "git://github.com/vim-scripts/EasyGrep.git"
 Bundle "git://github.com/godlygeek/tabular.git"
-Bundle "git://github.com/vim-scripts/UltiSnips.git"
+Bundle "https://github.com/msanders/snipmate.vim.git"
 " Text object that manipulates indentation, e.g. vai / vii = select indent block
 " including / excluding the outer lines. For python, coffee, jade etc
 Bundle "git://github.com/austintaylor/vim-indentobject.git"
@@ -82,27 +51,16 @@ Bundle "git://github.com/vim-scripts/diffchanges.vim.git"
 
 Bundle "git://github.com/vim-scripts/scratch.vim.git"
 Bundle "git://github.com/vim-scripts/bufkill.vim.git"
-Bundle "git://github.com/tpope/vim-repeat.git"
 
 " Colorschemes
 Bundle "git://github.com/sjl/badwolf.git"
 Bundle 'git://github.com/altercation/vim-colors-solarized.git'
-" Nice light scheme
-" Tutti color theme https://github.com/satyajitranjeev/Dotvim
 
 
 filetype plugin indent on
 " ==============================================================================
 " "Primary"                 {{{1
 " ==============================================================================
-let s:iswin = has('win32') || has('win64')
-
-" Creating directories if they don't exist
-"silent execute '!mkdir -p $HOME/.vim'
-"silent execute '!mkdir -p $HOME/.vim/tmp'
-"silent execute '!mkdir -p $HOME/.vim/tmp/bac'
-"silent execute '!mkdir -p $HOME/.vim/tmp/undo'
-
 let $TEMP = $HOME . '/.vim/tmp'
 let $VIMHOME = $HOME . '/.vim'
 " Отключение совместимости с vi
@@ -124,9 +82,6 @@ let s:us_spell         = 0
 " AutoReload .vimrc
 if has("autocmd")
 	autocmd! bufwritepost .vimrc source $MYVIMRC
-	if s:iswin
-		autocmd! bufwritepost _vimrc source $MYVIMRC
-	endif
 endif
 
 " Включение подсветки синтаксиса
@@ -194,14 +149,7 @@ set iminsert=0
 set lazyredraw
 
 " Испольвозать англоязычный интерфес
-if s:iswin
-	language message en
-else " для linux
-	language mes C
-endif
-
-" русская раскладка клавиатуры
-"set langmap=ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
+language mes C
 " ==============================================================================
 " "Files"                   {{{1
 " ==============================================================================
@@ -260,26 +208,15 @@ set virtualedit=onemore
 " Cursor line always in center of the screen
 set scrolloff=999
 
-if s:iswin
-	set gfn=DejaVu_Sans_Mono:h10:,consolas:h11
-elseif has("gui_gtk2")
-	set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
-endif
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
 
-set background=dark
+set background=light
 try
 	let g:solarized_termcolors=256
-	"colorscheme solarized
-	colorscheme badwolf
-	"colorscheme mustang
+    colorscheme solarized
 catch /^Vim\%((\a\+)\)\=:E185/
 	colorscheme desert
 endtry
-
-"if s:iswin
-	"" Установка высоты и ширины окна
-	"winsize 150 800
-"endif
 
 set guioptions=
 set guioptions+=c   " Отключение графических диалогов
@@ -298,15 +235,11 @@ set fillchars+=vert:\|
 
 " Установка символов для подсветки
 if has('multi_byte')
-	if version >= 700
-		set listchars=tab:▸\ ,trail:·,extends:»,precedes:«,nbsp:×
-	else
-		set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:_
-	endif
+    set listchars=tab:▸\ ,trail:·,extends:»,precedes:«,nbsp:×
 endif
 
 " Подсветка всех слов под курсором
-"autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
+autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 " ==============================================================================
 " "Statusline"              {{{1
 " ==============================================================================
@@ -318,7 +251,7 @@ set laststatus=2
 " ==============================================================================
 set autoindent                          " Наследовать отступы предыдущей строки
 set smartindent                         " Включить 'умные' отступы
-"set expandtab                           " Преобразование таба в пробелы
+set expandtab                           " Преобразование таба в пробелы
 set shiftwidth=4                        " Размер табуляции по умолчанию
 set softtabstop=4
 set tabstop=4
@@ -413,8 +346,6 @@ nmap gV `[v`]
 
 " Insert the directory of the current buffer in command line mode
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
-
-"nnoremap ; :
 
 " visual shifting (does not exit Visual mode)
 vnoremap < <gv
@@ -541,7 +472,7 @@ nmap # #zz
 " ,ev open _vimrc in new tab
 nmap <leader>ev :e $MYVIMRC<CR>
 "
-" ,ei open _vimrc in new tab
+" ,ei open gitignore in new tab
 nmap <leader>ei :e .gitignore<CR>
 
 " ,es Scratch buffer
@@ -551,9 +482,9 @@ nmap <leader>es :Sscratch<cr>
 map <Leader>n :enew<CR>
 
 " "SESSIONS"	{{{2
-nmap <Leader>sl :SessionList<cr>
-nmap <Leader>ss :SessionSave<cr>
-nmap <Leader>sS :SessionSaveAs<cr>
+nmap <Leader>sl : SessionList<cr>
+nmap <Leader>ss : SessionSave<cr>
+nmap <Leader>sS : SessionSaveAs<cr>
 
 " "ALIGN"	{{{2
 " Tabularize
@@ -629,15 +560,6 @@ function! ToggleListChars()
 		:set nolist
 	else
 		:set list
-	endif
-endfunction
-
-" Открытие файла приложением определённым по умолчанию
-function! s:OpenFileInDefaultApp()
-	if s:cmdline == ""
-		execute '!"%"'
-	else
-		execute '!"% ' . s:cmdline . '"'
 	endif
 endfunction
 
@@ -763,63 +685,8 @@ augroup ft_javascript
 augroup END
 
 " }}}
-" CoffeeScript {{{2
-
-augroup ft_javascript
-    au!
-
-    au FileType javascript setlocal foldmethod=indent
-augroup END
 
 " }}}
-" CSS and LessCSS {{{2
-
-augroup ft_css
-    au!
-
-    au BufNewFile,BufRead *.less setlocal filetype=less
-
-    au Filetype less,css setlocal foldmethod=marker
-    au Filetype less,css setlocal foldmarker={,}
-    au Filetype less,css setlocal omnifunc=csscomplete#CompleteCSS
-    au Filetype less,css setlocal iskeyword+=-
-
-    au BufNewFile,BufRead *.less,*.css nnoremap <buffer> <localleader>S ?{<CR>jV/\v^\s*\}?$<CR>k:sort<CR>:noh<CR>
-
-    " Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
-    " positioned inside of them AND the following code doesn't get unfolded.
-    au BufNewFile,BufRead *.less,*.css inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
-augroup END
-" C {{{2
-
-augroup ft_c
-    au!
-    au FileType c setlocal foldmethod=syntax
-augroup END
-
-" }}}
-" Python {{{2
-
-augroup ft_python
-    au!
-
-    " au FileType python setlocal omnifunc=pythoncomplete#Complete
-    au FileType python setlocal define=^\s*\\(def\\\\|class\\)
-    au FileType python compiler nose
-    au FileType man nnoremap <buffer> <cr> :q<cr>
-
-    " Jesus tapdancing Christ, built-in Python syntax, you couldn't let me
-    " override this in a normal way, could you?
-    au FileType python if exists("python_space_error_highlight") | unlet python_space_error_highlight | endif
-
-    " Jesus, Python.  Five characters of punctuation for a damn string?
-    au FileType python inoremap <buffer> <c-g> _(u'')<left><left>
-
-    au FileType python inoremap <buffer> <c-b> """"""<left><left><left>
-augroup END
-
-" }}}
-" ==============================================================================
 " "Fix"                     {{{1
 "
 " Узнать из какого файла переменная была установлена посл. раз
@@ -946,35 +813,11 @@ let g:tagbar_iconchars = ['▶', '◢']
 " Не сортировать
 let g:tagbar_sort = 0
 " ==============================================================================
-" "Plugin.Vim-template" {{{2
-" ==============================================================================
-autocmd User plugin-template-loaded call s:template_keywords()
-
-function! s:template_keywords()
-	if search('<+FILE_NAME+>')
-		silent %s/<+FILE_NAME+>/\=toupper(expand('%:t:r'))/g
-	endif
-	if search('<+CURSOR+>')
-		execute 'normal! "_da>'
-	endif
-	"silent %s/<+DATE+>/\=strftime('%Y-%m-%d')/g
-endfunction
-" ==============================================================================
-" "Plugin.VimWiki" {{{2
-" ==============================================================================
-if s:iswin
-	let g:vimwiki_list = [{'path': 'D:\Dropbox\vimwiki\'}]
-else
-	let g:vimwiki_list = [{'path': '~/Dropbox/vimwiki/'}]
-endif
 " "Plugin.PowerLine" {{{2
 " ==============================================================================
-if s:iswin
-	let g:Powerline_symbols = 'unicode'
-else
-	let g:Powerline_symbols = 'fancy'
-endif
+let g:Powerline_symbols = 'fancy'
 let g:Powerline_cache_enabled = 1
+" ==============================================================================
 " "Plugin.MiniBufExplorer" {{{2
 " =============================================================================
 let g:miniBufExplTabWrap = 1 " make tabs show complete (no broken on two lines)
@@ -992,15 +835,6 @@ hi MBEChanged guifg=#CD5907 guibg=fg cterm=italic gui=italic
 hi MBENormal guifg=#808080 guibg=fg cterm=italic gui=italic
 
 
-" =============================================================================
-"
-
-" "Plugin.UltiSnips" {{{2
-" ==============================================================================
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-" ==============================================================================
 "}}} {{{1
 " vim: foldenable fdm=marker fdc=0 foldlevelstart=0 sts=4 sw=4 tw=64 fileencoding=utf-8
 " }}}
