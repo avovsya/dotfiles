@@ -22,40 +22,32 @@ Bundle "git://github.com/vim-scripts/sessionman.vim.git"
 Bundle "git://github.com/Shougo/neocomplcache.git"
 Bundle "git://github.com/tpope/vim-fugitive.git"
 Bundle "git://github.com/gregsexton/gitv.git"
-Bundle "git://github.com/xolox/vim-easytags.git"
 Bundle "git://github.com/Raimondi/delimitMate.git"
-Bundle "git://github.com/majutsushi/tagbar.git"
 Bundle "git://github.com/scrooloose/syntastic.git"
 Bundle "git://github.com/kien/ctrlp.vim.git"
 Bundle "git://github.com/rom399/vim-colors.git"
-Bundle "git://github.com/skammer/vim-css-color.git"
+"Bundle "git://github.com/skammer/vim-css-color.git"
 Bundle 'git://github.com/vim-scripts/IndexedSearch.git'
 Bundle "git://github.com/tpope/vim-surround.git"
 Bundle "git://github.com/tpope/vim-repeat.git"
 Bundle "git://github.com/Lokaltog/vim-powerline.git"
 Bundle "git://github.com/fholgado/minibufexpl.vim.git"
-
-" Syntax and filetype plugins
-Bundle "git://github.com/kchmck/vim-coffee-script.git"
-
-" Тестируемые
 Bundle "git://github.com/vim-scripts/EasyGrep.git"
 Bundle "git://github.com/godlygeek/tabular.git"
 Bundle "https://github.com/msanders/snipmate.vim.git"
 " Text object that manipulates indentation, e.g. vai / vii = select indent block
 " including / excluding the outer lines. For python, coffee, jade etc
 Bundle "git://github.com/austintaylor/vim-indentobject.git"
-
 Bundle "git://github.com/vim-scripts/YankRing.vim.git"
 Bundle "git://github.com/vim-scripts/diffchanges.vim.git"
-
 Bundle "git://github.com/vim-scripts/scratch.vim.git"
 Bundle "git://github.com/vim-scripts/bufkill.vim.git"
 
-" Colorschemes
-Bundle "git://github.com/sjl/badwolf.git"
-Bundle 'git://github.com/altercation/vim-colors-solarized.git'
+" Syntax and filetype plugins
+Bundle "git://github.com/kchmck/vim-coffee-script.git"
 
+" Colorschemes
+Bundle 'git://github.com/altercation/vim-colors-solarized.git'
 
 filetype plugin indent on
 " ==============================================================================
@@ -99,7 +91,7 @@ autocmd GUIEnter * set novisualbell t_vb=
 set ttyfast
 
 " Язык помощи
-set helplang=en,ru
+set helplang=en
 
 " Переход на предыдущую/следующую строку
 set backspace=indent,eol,start
@@ -210,7 +202,7 @@ set scrolloff=999
 
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
 
-set background=light
+set background=dark
 try
 	let g:solarized_termcolors=256
     colorscheme solarized
@@ -239,7 +231,7 @@ if has('multi_byte')
 endif
 
 " Подсветка всех слов под курсором
-autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
+"autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 " ==============================================================================
 " "Statusline"              {{{1
 " ==============================================================================
@@ -337,8 +329,8 @@ let mapleader=","
 " https://github.com/henrik/dotfiles/blob/master/vim/config/mappings.vim
 noremap <leader>y "*y
 noremap <leader>Y "*y$
-noremap <leader>p :set paste<CR>"*p<CR>:set nopaste<CR>
-noremap <leader>P :set paste<CR>"*P<CR>:set nopaste<CR>
+noremap <leader>p :set paste!<CR>"*p<CR>:set nopaste<CR>
+noremap <leader>P :set paste!<CR>"*P<CR>:set nopaste<CR>
 vnoremap <leader>y "*ygv
 
 " Visually select the text that was last edited/pasted
@@ -419,8 +411,8 @@ nmap <Leader>f<Space> :%s/\s\+$//<cr>''
 nnoremap Y y$
 
 " "NAVIGATION" {{{2
-noremap H ^
-noremap L $
+nnoremap H ^
+nnoremap L $
 
 noremap j gj
 noremap k gk
@@ -500,7 +492,7 @@ if exists(":Tab")
 endif
 " "TAGS"	{{{2
 "Открытие/закрытие окна tagbar (plugin-tagbar)
-map <Leader>tt :TagbarToggle<cr>
+"map <Leader>tt :TagbarToggle<cr>
 " Создать базу данных для файлов в текущей директории
 "map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 " map <leader>tg :!ctags --extra=+f --languages=-javascript --exclude=.git --exclude=log -R * `rvm gemdir`/gems/* `rvm gemdir`/bundler/gems/*<CR><C-M>
@@ -673,16 +665,16 @@ endfunction
 " ==============================================================================
 " Javascript {{{2
 
-augroup ft_javascript
-    au!
+"augroup ft_javascript
+    "au!
 
-    au FileType javascript setlocal foldmethod=marker
-    au FileType javascript setlocal foldmarker={,}
+    "au FileType javascript setlocal foldmethod=marker
+    "au FileType javascript setlocal foldmarker={,}
 
-    " Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
-    " positioned inside of them AND the following code doesn't get unfolded.
-    au Filetype javascript inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
-augroup END
+    "" Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
+    "" positioned inside of them AND the following code doesn't get unfolded.
+    "au Filetype javascript inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
+"augroup END
 
 " }}}
 
@@ -718,7 +710,7 @@ imap <C-e> <esc>:CtrlPMRU<cr>
 
 " Список файлов в текущей директории (plugin-CtrlP)
 "imap <C-p> <esc>:CtrlP<cr>
-" Don't now what is this, need to investigate
+" Don't know what is this, need to investigate
 " let g:ctrlp_dont_split = 'NERD_tree_2'
 " let g:ctrlp_jump_to_buffer = 0
 " let g:ctrlp_map = '<leader>,'
@@ -795,24 +787,6 @@ let NERDTreeBookmarksFile= $VIMHOME . '/.NERDTreeBookmarks'
 " ==============================================================================
 let g:syntastic_enable_signs = 1
 " ==============================================================================
-" "Plugin.Tagbar" {{{2
-" ==============================================================================
-" Показывать окно слева
-let g:tagbar_left = 1
-
-" Ширина окна
-let g:tagbar_width = 30
-
-" Не оставлять пробелов между определениями в окне Tagbar
-"let g:tagbar_compact = 1
-
-" Показывать стрелки вместо +/-
-"let g:tagbar_iconchars = ['▶', '▼']
-let g:tagbar_iconchars = ['▶', '◢']
-
-" Не сортировать
-let g:tagbar_sort = 0
-" ==============================================================================
 " "Plugin.PowerLine" {{{2
 " ==============================================================================
 let g:Powerline_symbols = 'fancy'
@@ -820,9 +794,9 @@ let g:Powerline_cache_enabled = 1
 " ==============================================================================
 " "Plugin.MiniBufExplorer" {{{2
 " =============================================================================
-let g:miniBufExplTabWrap = 1 " make tabs show complete (no broken on two lines)
+"let g:miniBufExplTabWrap = 1 " make tabs show complete (no broken on two lines)
 let g:miniBufExplUseSingleClick = 1 " If you would like to single click on tabs rather than double clicking on them to goto the selected buffer.
-let g:miniBufExplMaxSize = 1 " <max lines: defualt 0> setting this to 0 will mean the window gets as big as needed to fit all your buffers.
+"let g:miniBufExplMaxSize = 1 " <max lines: defualt 0> setting this to 0 will mean the window gets as big as needed to fit all your buffers.
 "let g:miniBufExplorerMoreThanOne = 0
 "let g:miniBufExplModSelTarget = 1
 
