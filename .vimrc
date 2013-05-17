@@ -10,7 +10,7 @@
 
 filetype off
 
-set runtimepath+=$HOME/.vim/bundle/vundle/
+set runtimepath+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle "git://github.com/gmarik/vundle.git"
@@ -43,6 +43,7 @@ Bundle "git://github.com/vim-scripts/diffchanges.vim.git"
 Bundle "git://github.com/vim-scripts/scratch.vim.git"
 Bundle "git://github.com/vim-scripts/bufkill.vim.git"
 
+
 " Syntax and filetype plugins
 Bundle "git://github.com/kchmck/vim-coffee-script.git"
 
@@ -53,8 +54,8 @@ filetype plugin indent on
 " ==============================================================================
 " "Primary"                 {{{1
 " ==============================================================================
-let $TEMP = $HOME . '/.vim/tmp'
-let $VIMHOME = $HOME . '/.vim'
+let $TEMP = '~/.vim/tmp'
+let $VIMHOME = '~/.vim'
 " Отключение совместимости с vi
 set nocompatible
 
@@ -200,7 +201,7 @@ set virtualedit=onemore
 " Cursor line always in center of the screen
 set scrolloff=999
 
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
+set guifont=Monaco\ for\ Powerline
 
 set background=dark
 try
